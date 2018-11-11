@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import format from 'date-fns/format';
 
-const endpoint = "https://nyapi.fuken.xyz";
 const List = styled.ul`
   margin: 0;
   padding: 0;
@@ -64,62 +64,46 @@ const dayMap = {
   'Today': 'Hoy'
 }
 
-class Calendar extends Component {
-  state = {
-    calendar: []
-  }
-  componentDidMount() {
-    const url = `${endpoint}/calendar`;
-    window.fetch(url).then(res => res.json())
-    .then(json => {
-      this.setState({
-        calendar: json // this.filterCalendar(json)
-      });
-    });
-  }
-  formatTime(timeStr) { 
-    const date = new Date(timeStr);
-    return `${date.getHours()}:${date.getMinutes()}`;
-  }
-  // filterCalendar(calendar) {
-  //   return calendar.filter(group => {
-  //     const startOfDay = moment(group.day, 'dddd');
-  //     if(group.day === 'Sunday') {
-  //       startOfDay.add(1, 'week')
-  //     }
-  //     return startOfDay.isSameOrAfter(moment(), 'day')
-  //   }).map(group => {
-  //     if (moment(group.day, 'dddd').isSame(moment(), 'day')) {
-  //       group.day = 'Today';
-  //     }
-  //     return group;
-  //   })
-  // }
-
-  render() { 
-    return ( 
-      <CalendarStyles className="column">
-        <header>
-          <h2>Calendario</h2>
-          <p>Horario de emision de capitulos de HorribleSubs</p>
-        </header>
-        {this.state.calendar.map(group => (
-          <List key={group.day}>
-            <h3>{dayMap[group.day] || group.day}</h3>
-            <p className="nodata">
-              {group.animes.length ? '' : 'Sin capítulos este día'}
-            </p>
-            {group.animes.map(item => (
-              <li key={item.slug + group.day + item.time}>
-                <Link to={item.slug}>{item.title}</Link>
-                <p>{this.formatTime(item.time)}</p>
-              </li>
-            ))}
-          </List>
-        ))}
-      </CalendarStyles>
-    );
-  }
+function formatTime(timeStr) { 
+  const date = new Date(timeStr);
+  return format(date, 'HH:MM');
 }
- 
+
+const endpoint = "https://nyapi.fuken.xyz";
+function Calendar() {
+  const [calendar, setCalendar] = useState([]);
+
+  // using an empty watchilist runs the effect only on mount and unmount
+  const propsWatchlist = [];
+  useEffect(async () => {
+    const url = `${endpoint}/calendar`;
+    const data = await window.fetch(url);
+    const json = await data.json();
+    setCalendar(json);
+  }, propsWatchlist)
+
+  return ( 
+    <CalendarStyles className="column">
+      <header>
+        <h2>Calendario</h2>
+        <p>Horario de emision de capitulos de HorribleSubs</p>
+      </header>
+      {calendar.map(group => (
+        <List key={group.day}>
+          <h3>{dayMap[group.day] || group.day}</h3>
+          <p className="nodata">
+            {group.animes.length ? '' : 'Sin capítulos este día'}
+          </p>
+          {group.animes.map(item => (
+            <li key={item.slug + group.day + item.time}>
+              <Link to={item.slug}>{item.title}</Link>
+              <p>{formatTime(item.time)}</p>
+            </li>
+          ))}
+        </List>
+      ))}
+    </CalendarStyles>
+  );
+}
+
 export default Calendar;
