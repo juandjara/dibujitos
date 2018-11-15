@@ -109,6 +109,12 @@ function formatDate(ms) {
   return format(date, 'DD/MM - HH:mm');
 }
 
+function Loading() {
+  return (
+    <p style={{textAlign: 'center'}}>Cargando....</p>
+  );
+}
+
 class Latest extends Component {
   containerRef = null
   state = {
@@ -124,14 +130,18 @@ class Latest extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.search !== this.props.search) {
-      this.fetch();
+      this.setState({
+        page: 0,
+        episodes: []
+      }, () => this.fetch())
     }
   }
 
   async fetch() {
-    const {page, loading, source} = this.state;
+    this.setState({loading: true});
+    const {page, source} = this.state;
     const search = this.props.search;
-    console.log('fetching with props ', [page, loading, source, search])
+    console.log('fetching with props ', [page, source.value, search])
     const url = `${endpoint}/latest?page=${page}&q=${search}&source=${source.value}`;
     const res = await window.fetch(url);
     const json = await res.json();
@@ -143,10 +153,12 @@ class Latest extends Component {
   }
 
   handleNextPage = () => {
+    if (this.state.loading) {
+      return;
+    }
     this.setState(state => ({
       ...state,
-      page: state.page + 1,
-      loading: true
+      page: state.page + 1
     }), () => this.fetch());
   }
 
@@ -154,7 +166,7 @@ class Latest extends Component {
     this.setState(state => ({
       ...state,
       source,
-      loading: true,
+      page: 0,
       episodes: []
     }), () => this.fetch())
   }
@@ -201,11 +213,10 @@ class Latest extends Component {
             </li>
           ))}
         </List>
-        {loading ? null : (
-          <Waypoint scrollableAncestor={this.containerRef} onEnter={this.handleNextPage}>
-            <div style={{height: 10, width: 10}}></div>
-          </Waypoint>
-        )}
+        {loading && <Loading />}
+        <Waypoint scrollableAncestor={this.containerRef} onEnter={this.handleNextPage}>
+          <div style={{height: 50, width: 10}}></div>
+        </Waypoint>
       </LatestStyles>
     );
   }
