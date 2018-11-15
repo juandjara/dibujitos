@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 const List = styled.ul`
   margin: 0;
@@ -37,7 +38,7 @@ const List = styled.ul`
     opacity: 0.8;
   }
 `;
-const CalendarStyles = styled.div`
+const CalendarStyles = styled(PerfectScrollbar)`
   flex-basis: 460px;
   header {
     padding: 0 20px;
