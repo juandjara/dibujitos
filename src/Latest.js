@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import theme from './theme';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
+import { sourceOptions, endpoint } from './config';
 
 const LatestStyles = styled(PerfectScrollbar)`
   flex-grow: 1;
@@ -97,12 +98,6 @@ const List = styled.ul`
     }
   }
 `;
-
-const sourceOptions = [
-  {label: 'HorribleSubs - Inglés', value: 'hs'},
-  {label: 'PuyaSubs - Español', value: 'py'}
-]
-const endpoint = "https://nyapi.fuken.xyz";
 
 function formatDate(ms) {
   const date = new Date(ms);
@@ -197,7 +192,7 @@ class Latest extends Component {
         <List>
           {episodes.map((ep, i) => (
             <li key={`${ep.slug}-${ep.episodeNumber}`}>
-              <Link to={`/shows/${ep.slug}`}>
+              <Link to={`/show/${ep.slug}`}>
                 <img src={ep.posterImage.small} alt="portada del show" />
                 <div>
                   <p className="title">
