@@ -52,6 +52,7 @@ const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  align-items: center;
   li {
     position: relative;
     margin: 3px 5px;
@@ -59,7 +60,7 @@ const List = styled.ul`
     border: 1px solid #ccc;
     border-radius: 2px;
     &:hover {
-      border-color: ${theme.colors.secondary};
+      border: 2px solid ${theme.colors.secondary};
     }
     > a {
       display: block;

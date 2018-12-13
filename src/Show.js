@@ -13,53 +13,59 @@ const ShowStyles = styled.main`
     max-width: 1024px;
     margin: 0 auto;
     margin-bottom: 24px;
+    margin-top: 16px;
     padding: 0 8px;
-  }
-  h2 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: 400;
-  }
-  .meta {
     display: flex;
     align-items: flex-start;
+    justify-content: flex-start;
+  }
+  aside {
     img {
       display: block;
       margin: 0 auto;
+      margin-bottom: 16px;
+    }
+  }
+  main {
+    flex: 1 1 0%;
+    margin: 0 16px;
+  }
+  
+  .meta {
+    h2 {
+      margin-top: 6px;
+      font-weight: 400;
     }
     p {
-      flex: 1 1 0%;
-      margin: 16px;
-    } 
-  }
-  .filter {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    .search-box {
-      background-color: white;
-      border-radius: 8px;
-      border: 1px solid #e4e4e4;
-      input {
-        font-size: 14px;
-        line-height: 26px;
-        padding: 2px 6px;
-        outline: none;
-        border: 2px solid transparent;
-        background: transparent;
-        min-width: 200px;
-      }
-      .material-icons {
-        opacity: 0.5;
-        padding-left: 6px;
-      }
+      margin: 16px 0;
     }
-    .select-box {
-      min-width: 210px;
-      label {
-        display: block;
-        margin-bottom: 4px;
-      }
+  }
+  .search-box {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e4e4e4;
+    display: inline-block;
+    input {
+      font-size: 14px;
+      line-height: 26px;
+      padding: 2px 6px;
+      outline: none;
+      border: 2px solid transparent;
+      background: transparent;
+      min-width: 200px;
+    }
+    .material-icons {
+      opacity: 0.5;
+      padding-left: 6px;
+    }
+  }
+  .select-box {
+    min-width: 210px;
+    display: inline-block;
+    margin-top: 8px;
+    label {
+      display: block;
+      margin-bottom: 4px;
     }
   }
 `;
@@ -94,6 +100,12 @@ const List = styled.ul`
   }
 `;
 
+const Loading = styled.p`
+  text-align: center;
+  font-size: 24px;
+  margin-top: 16px;
+`;
+
 class Show extends Component {
 
   inputNode = null
@@ -119,10 +131,15 @@ class Show extends Component {
 
   handleKeyUp = (ev) => {
     if (ev.which === 13) {
-      this.props.history.push(`/home?search=${this.state.search}`);
-      if (this.inputNode) {
-        this.inputNode.blur();
-      }
+      this.setState(state => ({
+        ...state,
+        show: {
+          ...state.show,
+          episodes: []
+        }
+      }), () => {
+        this.fetchShow();
+      });
     }
   }
 
@@ -131,7 +148,8 @@ class Show extends Component {
     const {page, source} = this.state;
     const meta = Number(page === 0);
 
-    const url = `${endpoint}/show/${slug}?page=${page}&meta=${meta}&source=${source.value}`;
+    const search = this.state.search ? ' ' + this.state.search : '';
+    const url = `${endpoint}/show/${slug}${search}?page=${page}&meta=${meta}&source=${source.value}`;
     const res = await window.fetch(url);
     const json = await res.json();
     json.episodes.sort((a, b) => b.episodeNumber - a.episodeNumber);
@@ -176,17 +194,13 @@ class Show extends Component {
       show, source, pageHasNext, search
     } = this.state;
     if (loadingShow) {
-      return <p>Cargando...</p>
+      return <Loading>Cargando...</Loading>
     }
     return (
       <ShowStyles>
         <div className="wrapper">
-          <h2>{show.canonicalTitle}</h2>
-          <section className="meta">
+          <aside>
             <img src={show.posterImage.small} alt="portada del show" />
-            <p>{show.description}</p>
-          </section>
-          <section className="filter">
             <div className="search-box">
               <Icon icon="search" />
               <input
@@ -197,6 +211,22 @@ class Show extends Component {
                 onKeyUp={this.handleKeyUp}
                 placeholder="Buscar ep. por numero" />
             </div>
+            <List>
+              {show.episodes.map(ep => (
+                <li tabIndex={0} key={ep.episodeNumber}
+                  className={this.episodeIsSelected(ep) ? 'selected' : ''}
+                  onClick={() => this.selectEpisode(ep)}>
+                  <i className="material-icons">play_arrow</i>
+                  <p>{this.formatEpisodeTitle(ep)}</p>
+                </li>
+              ))}
+            </List>
+          </aside>
+          <main>
+            <div className="meta">
+              <h2>{show.canonicalTitle}</h2>
+              <p>{show.description}</p>
+            </div>
             <div className="select-box">
               <label htmlFor="sort">Fuente</label>
               <Select
@@ -206,17 +236,7 @@ class Show extends Component {
                 onChange={this.handleSourceChange}
               />
             </div>
-          </section>
-          <List>
-            {show.episodes.map(ep => (
-              <li tabIndex={0} key={ep.episodeNumber}
-                className={this.episodeIsSelected(ep) ? 'selected' : ''}
-                onClick={() => this.selectEpisode(ep)}>
-                <i className="material-icons">play_arrow</i>
-                <p>{this.formatEpisodeTitle(ep)}</p>
-              </li>
-            ))}
-          </List>
+          </main>
         </div>
       </ShowStyles>
     );
