@@ -35,10 +35,16 @@ const ShowStyles = styled.main`
   .meta {
     h2 {
       margin-top: 6px;
+      margin-bottom: 16px;
       font-weight: 400;
     }
-    p {
-      margin: 16px 0;
+    p + p {
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
+    small {
+      font-size: 14px;
+      font-weight: bold;
     }
   }
   .search-box {
@@ -162,7 +168,7 @@ class Show extends Component {
   async fetchShow() {
     const slug = this.props.match.params.slug;
     const {page, source} = this.state;
-    const meta = Number(page === 0);
+    const meta = page === 0 ? '1' : '';
 
     const search = this.state.search ? ' ' + this.state.search : '';
     const url = `${endpoint}/show/${slug}${search}?page=${page}&meta=${meta}&source=${source.value}`;
@@ -209,6 +215,10 @@ class Show extends Component {
       loadingShow, loadingEpisodes,
       show, source, pageHasNext, search
     } = this.state;
+    const statusMap = {
+      finished: 'Finalizada',
+      current: 'En emisión'
+    }
     if (loadingShow) {
       return <Loading>Cargando...</Loading>
     }
@@ -249,6 +259,13 @@ class Show extends Component {
           <main>
             <div className="meta">
               <h2>{show.canonicalTitle}</h2>
+              <p>
+                <small>
+                  {new Date(show.startDate).getFullYear()}
+                  {' - '}
+                  {statusMap[show.status]}
+                </small>
+              </p>
               <p>{show.description}</p>
             </div>
             <div className="select-box">
