@@ -5,6 +5,7 @@ import Select from 'react-select';
 import Icon from './Icon';
 import theme from './theme';
 import format from 'date-fns/format';
+import Button from './Button';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -45,6 +46,7 @@ const ShowStyles = styled.main`
     border-radius: 8px;
     border: 1px solid #e4e4e4;
     display: inline-block;
+    margin-bottom: 12px;
     input {
       font-size: 14px;
       line-height: 26px;
@@ -72,7 +74,8 @@ const ShowStyles = styled.main`
 
 const List = styled.ul`
   list-style: none;
-  margin: 16px 0;
+  margin-top: 8px;
+  margin-bottom: 12px;
   max-height: 300px;
   overflow-y: auto;
   li {
@@ -133,6 +136,8 @@ class Show extends Component {
     if (ev.which === 13) {
       this.setState(state => ({
         ...state,
+        page: 0,
+        loadingEpisodes: true,
         show: {
           ...state.show,
           episodes: []
@@ -141,6 +146,17 @@ class Show extends Component {
         this.fetchShow();
       });
     }
+  }
+
+  handleNextPage = () => {
+    this.setState(
+      ({page}) => ({
+        loadingEpisodes: true,
+        page: page + 1
+      }), () => {
+        this.fetchShow();
+      }
+    )
   }
 
   async fetchShow() {
@@ -211,6 +227,7 @@ class Show extends Component {
                 onKeyUp={this.handleKeyUp}
                 placeholder="Buscar ep. por numero" />
             </div>
+            <p style={{margin: '0 4px'}}>Episodios</p>
             <List>
               {show.episodes.map(ep => (
                 <li tabIndex={0} key={ep.episodeNumber}
@@ -221,6 +238,13 @@ class Show extends Component {
                 </li>
               ))}
             </List>
+            {pageHasNext && (
+              <Button main
+                disabled={loadingEpisodes} 
+                onClick={this.handleNextPage}>
+                Cargar más
+              </Button>
+            )}
           </aside>
           <main>
             <div className="meta">
