@@ -38,8 +38,13 @@ const List = styled.ul`
     opacity: 0.8;
   }
 `;
-const CalendarStyles = styled(PerfectScrollbar)`
-  flex-basis: 460px;
+
+const root = window.matchMedia('(min-width: 920px)').matches ?
+  PerfectScrollbar : 'div';
+const CalendarStyles = styled(root)`
+  @media (min-width: 920px) {
+    flex-basis: 460px;
+  }
   header {
     padding: 0 20px;
     h2 {

@@ -4,14 +4,22 @@ import Latest from './Latest';
 import Calendar from './Calendar';
 
 const HomeStyles = styled.main`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   @media (min-width: 920px) {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
     .column {
       overflow-y: auto;
       max-height: calc(100vh - 60px);
     }
+  }
+  @media (max-width: 920px) {
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
+    /* .column {
+      max-height: 100%;
+    } */
   }
 `;
 

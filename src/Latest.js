@@ -8,10 +8,14 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
 import { sourceOptions, endpoint } from './config';
 
-const LatestStyles = styled(PerfectScrollbar)`
+const root = window.matchMedia('(min-width: 920px)').matches ?
+  PerfectScrollbar : 'div';
+const LatestStyles = styled(root)`
   flex-grow: 1;
-  max-width: 768px;
-  margin: 0 auto;
+  .column-inner {
+    max-width: 768px;
+    margin: 0 auto;
+  }
   .loading {
     text-align: center;
     margin-top: 12px;
@@ -98,6 +102,13 @@ const List = styled.ul`
       }
     }
   }
+  @media (max-width: 420px) {
+    display: block;
+    li {
+      margin: 12px auto;
+      max-width: 242px;
+    }
+  }
 `;
 
 function formatDate(ms) {
@@ -171,48 +182,51 @@ class Latest extends Component {
     const search = this.props.search;
     const {loading, source, episodes} = this.state;
     return (
-      <LatestStyles containerRef={ref => this.containerRef = ref} className="column">
-        <p style={{textAlign: 'center', margin: '1em'}}>
-          Capitulos de anime en streaming desde torrents de HorribleSubs
-        </p>
-        <Header>
-          <div className="title">
-            <h2>{search ? 'Resultados de la búsqueda' : 'Ultimos Capitulos'}</h2>
-            <p>Mostrando {episodes.length} resultados</p>
-          </div>
-          <div className="select-box">
-            <label htmlFor="sort">Fuente</label>
-            <Select
-              isSearchable={false}
-              value={source}
-              options={sourceOptions}
-              onChange={this.handleSourceChange}
-            />
-          </div>
-        </Header>
-        <List>
-          {episodes.map((ep, i) => (
-            <li key={`${ep.slug}-${ep.episodeNumber}`}>
-              <Link to={`/show/${ep.slug}`}>
-                <img src={ep.posterImage.small} alt="portada del show" />
-                <div>
-                  <p className="title">
-                    <span>{ep.showTitle}</span>
-                    <span>Ep. {ep.episodeNumber}</span>
-                  </p>
-                  <p className="date">
-                    <i className="material-icons">event</i>
-                    <span>{formatDate(ep.episodeDate)}</span>
-                  </p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </List>
-        {loading && <Loading />}
-        <Waypoint scrollableAncestor={this.containerRef} onEnter={this.handleNextPage}>
-          <div style={{height: 50, width: 10}}></div>
-        </Waypoint>
+      <LatestStyles className="column"
+        containerRef={ref => this.containerRef = ref}>
+        <div className="column-inner">
+          <p style={{textAlign: 'center', margin: '1em'}}>
+            Capitulos de anime en streaming desde torrents de HorribleSubs
+          </p>
+          <Header>
+            <div className="title">
+              <h2>{search ? 'Resultados de la búsqueda' : 'Ultimos Capitulos'}</h2>
+              <p>Mostrando {episodes.length} resultados</p>
+            </div>
+            <div className="select-box">
+              <label htmlFor="sort">Fuente</label>
+              <Select
+                isSearchable={false}
+                value={source}
+                options={sourceOptions}
+                onChange={this.handleSourceChange}
+              />
+            </div>
+          </Header>
+          <List>
+            {episodes.map((ep, i) => (
+              <li key={`${ep.slug}-${ep.episodeNumber}`}>
+                <Link to={`/show/${ep.slug}`}>
+                  <img src={ep.posterImage.small} alt="portada del show" />
+                  <div>
+                    <p className="title">
+                      <span>{ep.showTitle}</span>
+                      <span>Ep. {ep.episodeNumber}</span>
+                    </p>
+                    <p className="date">
+                      <i className="material-icons">event</i>
+                      <span>{formatDate(ep.episodeDate)}</span>
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </List>
+          {loading && <Loading />}
+          <Waypoint scrollableAncestor={this.containerRef} onEnter={this.handleNextPage}>
+            <div style={{height: 50, width: 10}}></div>
+          </Waypoint>
+        </div>
       </LatestStyles>
     );
   }
