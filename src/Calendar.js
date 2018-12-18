@@ -73,6 +73,9 @@ const dayMap = {
 
 function formatTime(timeStr) { 
   const date = new Date(timeStr);
+  if (isNaN(date.getTime())) {
+    return '';
+  }
   return format(date, 'HH:MM');
 }
 
@@ -86,7 +89,18 @@ function Calendar() {
     const url = `${endpoint}/calendar`;
     const data = await window.fetch(url);
     const json = await data.json();
-    setCalendar(json);
+    // TODO: fix this in backend when 
+    // this https://github.com/tanukiapp/hs-calendar/pull/5 is merged
+    const cal = json.map((elem, index) => {
+      const prev = json[index - 1];
+      if (!prev) {
+        return elem;
+      }
+      elem.day = elem.day.split(' ')[0];
+      elem.animes = prev.animes;
+      return elem;
+    }).slice(1);
+    setCalendar(cal);
   }, propsWatchlist)
 
   return ( 

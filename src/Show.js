@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { sourceOptions, endpoint } from './config';
 import styled from 'styled-components';
 import Select from 'react-select';
@@ -6,7 +6,6 @@ import Icon from './Icon';
 import theme from './theme';
 import format from 'date-fns/format';
 import Button from './Button';
-import { mediaQueries } from './config';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -42,7 +41,7 @@ const ShowStyles = styled.main`
     }
   }
   aside {
-    flex: 0 0 auto;
+    flex: 0 0 0%;
     img {
       display: block;
       margin-left: 2px;
@@ -235,7 +234,10 @@ class Show extends Component {
 
   formatEpisodeTitle(episode) {
     const date = format(new Date(episode.timestamp), 'DD/MM/YYYY');
-    return `${date} - ${episode.showTitle} - ${episode.episodeNumber} `;
+    return (<div>
+      <p>{episode.episodeNumber} - {date}</p>
+      <p>{episode.showTitle}</p>
+    </div>);
   }
 
   render() {
@@ -273,7 +275,7 @@ class Show extends Component {
                   className={this.episodeIsSelected(ep) ? 'selected' : ''}
                   onClick={() => this.selectEpisode(ep)}>
                   <i className="material-icons">play_arrow</i>
-                  <p>{this.formatEpisodeTitle(ep)}</p>
+                  {this.formatEpisodeTitle(ep)}
                 </li>
               ))}
             </List>
