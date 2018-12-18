@@ -204,11 +204,13 @@ class Show extends Component {
     json.episodes.sort((a, b) => b.episodeNumber - a.episodeNumber);
     this.setState(state => {
       const prevEps = state.show ? state.show.episodes : [];
+      const pageHasNext = json.episodes.length > 0 && 
+        json.episodes.length < json.episodeCount;
       return {
         ...state,
         loadingShow: false,
         loadingEpisodes: false,
-        pageHasNext: json.episodes.length > 0,
+        pageHasNext,
         loading: false,
         show: {
           ...state.show,
