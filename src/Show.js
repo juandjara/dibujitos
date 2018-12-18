@@ -14,7 +14,7 @@ const ShowStyles = styled.main`
     max-width: 1024px;
     margin: 0 auto;
     margin-bottom: 24px;
-    margin-top: 16px;
+    margin-top: 6px;
     padding: 0 8px;
     display: flex;
     align-items: flex-start;
@@ -44,6 +44,7 @@ const ShowStyles = styled.main`
     flex: 0 0 0%;
     img {
       display: block;
+      margin-top: 6px;
       margin-left: 2px;
       margin-bottom: 16px;
     }
@@ -53,6 +54,10 @@ const ShowStyles = styled.main`
         display: none;
       }
     }
+    .material-icons {
+      font-size: 16px;
+      margin-right: 4px;
+    }
   }
   main {
     flex: 1 1 0%;
@@ -60,6 +65,7 @@ const ShowStyles = styled.main`
   }
   
   .meta {
+    margin-top: 60px;
     h2 {
       margin-top: 6px;
       margin-bottom: 16px;
@@ -259,6 +265,11 @@ class Show extends Component {
         <div className="wrapper">
           <img className="mobile-cover" src={show.posterImage.small} alt="portada del show" />
           <aside>
+            <Button main className="back-btn" 
+              onClick={() => window.history.back()}>
+              <i className="material-icons">arrow_back</i>
+              <span>Volver atrás</span>
+            </Button>
             <img src={show.posterImage.small} alt="portada del show" />
             <div className="search-box">
               <Icon icon="search" />
