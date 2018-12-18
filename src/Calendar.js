@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import { mediaQueries } from './config';
 
 const List = styled.ul`
   margin: 0;
@@ -39,7 +40,7 @@ const List = styled.ul`
   }
 `;
 
-const root = window.matchMedia('(min-width: 920px)').matches ?
+const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
 const CalendarStyles = styled(root)`
   @media (min-width: 920px) {

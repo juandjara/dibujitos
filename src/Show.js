@@ -6,6 +6,7 @@ import Icon from './Icon';
 import theme from './theme';
 import format from 'date-fns/format';
 import Button from './Button';
+import { mediaQueries } from './config';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -19,12 +20,39 @@ const ShowStyles = styled.main`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    @media (max-width: 420px) {
+      flex-direction: column;
+      aside {
+        margin-top: 24px;
+      }
+      main {
+        margin: 0;
+        h2 {
+          text-align: center;
+        }
+      }
+    }
+  }
+  .mobile-cover {
+    display: block;
+    margin: 0 auto;
+    max-width: 240px;
+    @media (min-width: 420px) {
+      display: none;
+    }
   }
   aside {
+    flex: 0 0 auto;
     img {
       display: block;
-      margin: 0 auto;
+      margin-left: 2px;
       margin-bottom: 16px;
+    }
+    @media (max-width: 420px) {
+      order: 2;
+      img {
+        display: none;
+      }
     }
   }
   main {
@@ -225,6 +253,7 @@ class Show extends Component {
     return (
       <ShowStyles>
         <div className="wrapper">
+          <img className="mobile-cover" src={show.posterImage.small} alt="portada del show" />
           <aside>
             <img src={show.posterImage.small} alt="portada del show" />
             <div className="search-box">

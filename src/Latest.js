@@ -6,9 +6,9 @@ import format from 'date-fns/format';
 import theme from './theme';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
-import { sourceOptions, endpoint } from './config';
+import { sourceOptions, endpoint, mediaQueries } from './config';
 
-const root = window.matchMedia('(min-width: 920px)').matches ?
+const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
 const LatestStyles = styled(root)`
   flex-grow: 1;
