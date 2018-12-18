@@ -163,8 +163,33 @@ class Show extends Component {
     selectedTorrent: null
   }
 
+  awaitState(modifier) {
+    return new Promise(resolve => this.setState(modifier, resolve));
+  }
+
   componentDidMount() {
-    this.fetchShow();
+    this.fetchShow().then(() => {
+      const eps = this.state.show.episodes;
+      if (!this.state.selectedEpisode && eps.length > 0) {
+        const epNumber = this.getEpisodeFromProps(this.props) || eps[0].episodeNumber;
+        this.findEpisode(epNumber);
+      }
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevEp = this.getEpisodeFromProps(prevProps);
+    const currEp = this.getEpisodeFromProps(this.props);
+    const {loadingShow, loadingEpisodes} = this.state;
+    if (prevEp !== currEp && !loadingShow && !loadingEpisodes) {
+      this.findEpisode(currEp);
+    }
+  }
+
+  getEpisodeFromProps({location}) {
+    const qs = location.search.replace('?', '');
+    const urlParams = new URLSearchParams(qs);
+    return Number(urlParams.get('ep'));
   }
 
   handleSearch = (ev) => {
@@ -173,18 +198,27 @@ class Show extends Component {
 
   handleKeyUp = (ev) => {
     if (ev.which === 13) {
-      this.setState(state => ({
-        ...state,
-        page: 0,
-        loadingEpisodes: true,
-        show: {
-          ...state.show,
-          episodes: []
-        }
-      }), () => {
-        this.fetchShow();
-      });
+      this.doSearch();
     }
+  }
+
+  doSearch(search) {
+    this.awaitState(state => ({
+      ...state,
+      page: 0,
+      search: search || state.search,
+      loadingEpisodes: true,
+      show: {
+        ...state.show,
+        episodes: []
+      }
+    }))
+    .then(() => this.fetchShow())
+    .then(() => {
+      const epList = this.state.show.episodes; 
+      const ep = epList.find(ep => ep.episodeNumber === Number(this.state.search)) || epList[0];
+      this.selectEpisode(ep);
+    });
   }
 
   handleNextPage = () => {
@@ -198,20 +232,38 @@ class Show extends Component {
     )
   }
 
+  findEpisode(epNumber) {
+    const foundEp = this.state.show.episodes.find(ep => ep.episodeNumber === epNumber);
+    if (foundEp) {
+      this.selectEpisode(foundEp);
+    } else {
+      const searchStr = epNumber < 10 ? `0${epNumber}` : epNumber;
+      this.doSearch(searchStr);
+    }
+  }
+
+  selectEpisode(ep) {
+    const firsTorrentKey = Object.keys(ep.qualities)
+      .find(key => ep.qualities[key]);
+    this.setState({
+      selectedEpisode: ep,
+      selectedTorrent: ep.qualities['720p'] || ep.qualities['480p'] || ep.qualities[firsTorrentKey]
+    });
+  }
+
   async fetchShow() {
     const slug = this.props.match.params.slug;
     const {page, source} = this.state;
-    const meta = page === 0 ? '1' : '';
+    const meta = page === 0 && !this.state.search ? '1' : '';
 
     const search = this.state.search ? ' ' + this.state.search : '';
     const url = `${endpoint}/show/${slug}${search}?page=${page}&meta=${meta}&source=${source.value}`;
     const res = await window.fetch(url);
     const json = await res.json();
     json.episodes.sort((a, b) => b.episodeNumber - a.episodeNumber);
-    this.setState(state => {
+    return this.awaitState(state => {
       const prevEps = state.show ? state.show.episodes : [];
-      const pageHasNext = json.episodes.length > 0 && 
-        json.episodes.length < json.episodeCount;
+      const pageHasNext = json.episodes.length > 0;
       return {
         ...state,
         loadingShow: false,
@@ -224,16 +276,13 @@ class Show extends Component {
           episodes: prevEps.concat(json.episodes)
         }
       }
-    })
-  }
-  
-  getEpNumber({location}) {
-    const params = new URLSearchParams(location.search.replace('?', ''));
-    const epString = params.get('ep');
-    return Number(epString);
+    });
   }
 
-  selectEpisode() {}
+  goToEpisode(ep) {
+    const url = this.props.location.pathname;
+    this.props.history.push(`${url}?ep=${ep.episodeNumber}`);
+  }
 
   episodeIsSelected(episode) {
     return this.state.selectedEpisode 
@@ -268,10 +317,11 @@ class Show extends Component {
             <Button main className="back-btn" 
               onClick={() => window.history.back()}>
               <i className="material-icons">arrow_back</i>
-              <span>Volver atrás</span>
+              <span>Volver</span>
             </Button>
             <img src={show.posterImage.small} alt="portada del show" />
-            <div className="search-box">
+            <div className="search-box" 
+              title="Escribe un numero y pulsa enter ⏎">
               <Icon icon="search" />
               <input
                 type="number"
@@ -286,7 +336,7 @@ class Show extends Component {
               {show.episodes.map(ep => (
                 <li tabIndex={0} key={ep.episodeNumber}
                   className={this.episodeIsSelected(ep) ? 'selected' : ''}
-                  onClick={() => this.selectEpisode(ep)}>
+                  onClick={() => this.goToEpisode(ep)}>
                   <i className="material-icons">play_arrow</i>
                   {this.formatEpisodeTitle(ep)}
                 </li>
@@ -321,6 +371,7 @@ class Show extends Component {
                 onChange={this.handleSourceChange}
               />
             </div>
+
           </main>
         </div>
       </ShowStyles>
