@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { sourceOptions, endpoint } from './config';
 import styled from 'styled-components';
 import Select from 'react-select';
