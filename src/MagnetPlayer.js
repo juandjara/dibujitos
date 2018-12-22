@@ -6,7 +6,6 @@ import popcornService from './popcornService';
 import Button from './Button';
 import Icon from './Icon';
 import styled from 'styled-components';
-// import { updateWatchedEpisodes } from './lastWatchedService';
 
 // TODO: make this a npm package
 
@@ -111,7 +110,9 @@ class MagnetPlayer extends Component {
         videoMime: biggestFile.mime === 'video/x-matroska' ? 'video/webm' : biggestFile.mime,
         videoUrl: `${downloaderApi}${biggestFile.link}`
       })
-      // updateWatchedEpisodes(this.props.episodeData);
+      if (typeof this.props.onLoaded === 'function') {
+        this.props.onLoaded();
+      }
     }).catch(err => {
       this.setState({loading: false});
       console.error(err);
@@ -120,7 +121,7 @@ class MagnetPlayer extends Component {
     popcornService.addDownloadListener(progress => {
       const percent = progress.filter((n ,i) => i % 2 === 0)
         .reduce((acum, n) => acum + n, 0);
-      this.setState({ loadingPercent: Number(percent).toFixed(2) })
+      this.setState({ loadingPercent: percent.toFixed(2) })
     });
   }
 

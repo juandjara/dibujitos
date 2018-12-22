@@ -9,6 +9,7 @@ import Button from './Button';
 import { Link } from 'react-router-dom';
 import MagnetPlayer from './MagnetPlayer';
 import Spinner from './Spinner';
+import { updateWatchedEpisodes } from './lastWatchedService';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -97,6 +98,9 @@ const ShowStyles = styled.main`
     border: 1px solid #e4e4e4;
     display: inline-block;
     margin-bottom: 12px;
+    &:hover {
+      border-color: #ccc;
+    }
     input {
       font-size: 14px;
       line-height: 26px;
@@ -156,12 +160,12 @@ const List = styled.ul`
     line-height: 28px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background: white;
     .material-icons {
       display: none;
       vertical-align: middle;
       font-size: 18px;
-      margin-right: 8px;
       padding: 4px;
       border-radius: 15px;
       border: 1px solid currentColor;
@@ -276,9 +280,10 @@ class Show extends Component {
     Object.keys(ep.qualities).forEach(key => {
       ep.qualities[key].key = key;
     });
-    const firsTorrentKey = Object.keys(ep.qualities)
-      .find(key => ep.qualities[key]);
-    const torrent = ep.qualities['720p'] || ep.qualities['480p'] || ep.qualities[firsTorrentKey];
+    ep.qualitiesMap = ep.qualities;
+    ep.qualitiesFlat = Object.values(ep.qualities).filter(Boolean)
+      .sort((a, b) => parseInt(a.key) - parseInt(b.key));
+    const torrent = ep.qualitiesMap['720p'] || ep.qualitiesMap['480p'] || ep.qualities[0];
     
     this.setState({
       selectedEpisode: ep,
@@ -299,6 +304,10 @@ class Show extends Component {
     return this.awaitState(state => {
       const prevEps = state.show ? state.show.episodes : [];
       const pageHasNext = json.episodes.length > 0;
+      const episodes = prevEps.concat(json.episodes)
+        .sort((a, b) => (
+          a.episodeNumber - b.episodeNumber
+        ));
       return {
         ...state,
         loadingShow: false,
@@ -308,7 +317,7 @@ class Show extends Component {
         show: {
           ...state.show,
           ...json,
-          episodes: prevEps.concat(json.episodes)
+          episodes
         }
       }
     });
@@ -333,10 +342,19 @@ class Show extends Component {
 
   formatEpisodeTitle(episode) {
     const date = format(new Date(episode.timestamp), 'DD/MM/YYYY');
-    return (<div>
-      <p>{episode.episodeNumber} - {date}</p>
-      <p>{episode.showTitle}</p>
-    </div>);
+    return <p>Ep. {episode.episodeNumber} - {date}</p>
+  }
+
+  updateLastWatched() {
+    const {posterImage, slug, canonicalTitle} = this.state.show;
+    const epNumber = this.state.selectedEpisode.episodeNumber
+    const data = {
+      epNumber,
+      img: posterImage.small,
+      title: canonicalTitle,
+      id: slug
+    };
+    updateWatchedEpisodes(data);
   }
 
   render() {
@@ -385,8 +403,10 @@ class Show extends Component {
                 <li tabIndex={0} key={ep.episodeNumber}
                   className={this.episodeIsSelected(ep) ? 'selected' : ''}
                   onClick={() => this.goToEpisode(ep)}>
-                  <i className="material-icons">play_arrow</i>
                   {this.formatEpisodeTitle(ep)}
+                  {this.episodeIsSelected(ep) && (
+                    <i className="material-icons">play_arrow</i>
+                  )}
                 </li>
               ))}
             </List>
@@ -423,11 +443,11 @@ class Show extends Component {
               <Fragment>
                 <section className="video-toolbar">
                   <div className="qualities">
-                    {Object.keys(selectedEpisode.qualities).map(key => (
-                      <Button key={key} 
-                        main={key === selectedTorrent.key}
-                        onClick={() => this.setState({selectedTorrent: selectedEpisode.qualities[key]})}>
-                        {key}
+                    {selectedEpisode.qualitiesFlat.map(torrent => (
+                      <Button key={torrent.key} 
+                        main={torrent.key === selectedTorrent.key}
+                        onClick={() => this.setState({selectedTorrent: selectedEpisode.qualitiesMap[torrent.key]})}>
+                        {torrent.key}
                       </Button>
                     ))}
                   </div>
@@ -437,7 +457,8 @@ class Show extends Component {
                     </Link>
                   )}
                 </section>
-                <MagnetPlayer magnet={selectedTorrent.magnet} />
+                <MagnetPlayer magnet={selectedTorrent.magnet}
+                  onLoaded={() => this.updateLastWatched()} />
               </Fragment>
             )}
           </main>
