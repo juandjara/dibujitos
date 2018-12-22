@@ -9,7 +9,7 @@ const HeaderStyle = styled.header`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  padding: 6px 16px;
+  padding: 6px 12px;
   color: white;
   background-color: ${theme.colors.primaryDark};
   > a {
@@ -18,8 +18,8 @@ const HeaderStyle = styled.header`
     align-items: center;
   }
   .logo {
-    height: 44px;
-    margin-right: 8px;
+    height: 36px;
+    margin-right: 6px;
   }
   h2 {
     padding: 6px 0;
