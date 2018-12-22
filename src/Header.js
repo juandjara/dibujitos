@@ -70,7 +70,7 @@ class Header extends React.Component {
       <Headroom>
         <HeaderStyle>
           <Link to="/">
-            {/* <img alt="logo" className="logo" src="/palomitas-outline.png"></img> */}
+            <img alt="logo" className="logo" src="/dibujitos_icon.png"></img>
             <h2>Dibujitos</h2>
           </Link>
           <div style={{flexGrow: 1}}></div>
