@@ -8,6 +8,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
 import { sourceOptions, endpoint, mediaQueries } from './config';
 import Spinner from './Spinner';
+import { getWatchedEpisodes } from './lastWatchedService';
 
 const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
@@ -16,10 +17,12 @@ const LatestStyles = styled(root)`
   .column-inner {
     max-width: 768px;
     margin: 0 auto;
-  }
-  .loading {
-    text-align: center;
-    margin-top: 12px;
+    > h2 {
+      font-weight: normal;
+      margin-top: 25px;
+      margin-left: 6px;
+      margin-bottom: 4px;
+    }
   }
 `;
 
@@ -55,59 +58,65 @@ const List = styled.ul`
   list-style: none;
   margin-bottom: 20px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
-  li {
-    position: relative;
-    margin: 3px 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    &:hover {
-      border: 2px solid ${theme.colors.secondary};
-    }
-    > a {
-      display: block;
-      color: inherit;
-      height: 340px;
-      > div {
-        padding: 8px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        background: rgba(255,255,255, 0.9);
-        width: 100%;
-      }
-    }
-    img {
-      width: 240px;
-      height: 340px;
-    }
-    p {
-      margin: 5px 0;
-    }
-    .title {
-      display: flex;
-      span:first-child {
-        color: ${theme.colors.primary};
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        flex: 1;
-      }
-    }
-    .date {
-      .material-icons {
-        margin-right: 6px;
-      }
-    }
-  }
+  ${props => props.horizontal ? `
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  ` : `
+  flex-wrap: wrap;
+  `}
   @media (max-width: 420px) {
     display: block;
     li {
       margin: 12px auto;
       max-width: 242px;
+    }
+  }
+`;
+
+const EpisodeCard = styled.li`
+  position: relative;
+  margin: 3px 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  &:hover {
+    border: 2px solid ${theme.colors.secondary};
+  }
+  > a {
+    display: block;
+    color: inherit;
+    height: 340px;
+    > div {
+      padding: 8px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background: rgba(255,255,255, 0.9);
+      width: 100%;
+    }
+  }
+  img {
+    width: 240px;
+    height: 340px;
+  }
+  p {
+    margin: 5px 0;
+  }
+  .title {
+    display: flex;
+    span:first-child {
+      color: ${theme.colors.primary};
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+    }
+  }
+  .date {
+    .material-icons {
+      margin-right: 6px;
     }
   }
 `;
@@ -176,6 +185,7 @@ class Latest extends Component {
   render() {
     const search = this.props.search;
     const {loading, source, episodes} = this.state;
+    const lastwatched = getWatchedEpisodes();
     return (
       <LatestStyles className="column"
         containerRef={ref => this.containerRef = ref}>
@@ -183,6 +193,24 @@ class Latest extends Component {
           <p style={{textAlign: 'center', margin: '1em'}}>
             Capitulos de anime en streaming desde torrents de HorribleSubs
           </p>
+          {lastwatched.length > 0 && (
+            <h2>Ultimamente has visto</h2>
+          )}
+          <List horizontal>
+            {lastwatched.map(ep => (
+              <EpisodeCard key={`${ep.id}-${ep.epNumber}`}>
+                <Link to={`/show/${ep.id}?ep=${ep.epNumber}`}>
+                  <img src={ep.img} alt="portada del show" />
+                  <div>
+                    <p className="title">
+                      <span>{ep.title}</span>
+                      <span>Ep. {ep.epNumber}</span>
+                    </p>
+                  </div>
+                </Link>
+              </EpisodeCard>
+            ))}
+          </List>
           <Header>
             <div className="title">
               <h2>{search ? 'Resultados de la búsqueda' : 'Ultimos Capitulos'}</h2>
@@ -200,7 +228,7 @@ class Latest extends Component {
           </Header>
           <List>
             {episodes.map((ep, i) => (
-              <li key={`${ep.slug}-${ep.episodeNumber}`}>
+              <EpisodeCard key={`${ep.slug}-${ep.episodeNumber}`}>
                 <Link to={`/show/${ep.slug}`}>
                   <img src={ep.posterImage.small} alt="portada del show" />
                   <div>
@@ -214,7 +242,7 @@ class Latest extends Component {
                     </p>
                   </div>
                 </Link>
-              </li>
+              </EpisodeCard>
             ))}
           </List>
           {loading && <Spinner />}

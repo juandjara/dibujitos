@@ -346,8 +346,9 @@ class Show extends Component {
   }
 
   updateLastWatched() {
-    const {posterImage, slug, canonicalTitle} = this.state.show;
-    const epNumber = this.state.selectedEpisode.episodeNumber
+    const {posterImage, canonicalTitle} = this.state.show;
+    const epNumber = this.state.selectedEpisode.episodeNumber;
+    const slug = this.props.match.params.slug;
     const data = {
       epNumber,
       img: posterImage.small,
