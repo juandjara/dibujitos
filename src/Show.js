@@ -21,7 +21,7 @@ const ShowStyles = styled.main`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    @media (max-width: 420px) {
+    @media (max-width: 786px) {
       flex-direction: column;
       aside {
         margin-top: 24px;
@@ -38,7 +38,7 @@ const ShowStyles = styled.main`
     display: block;
     margin: 0 auto;
     max-width: 240px;
-    @media (min-width: 420px) {
+    @media (min-width: 786px) {
       display: none;
     }
   }
@@ -50,7 +50,7 @@ const ShowStyles = styled.main`
       margin-left: 2px;
       margin-bottom: 16px;
     }
-    @media (max-width: 420px) {
+    @media (max-width: 786px) {
       order: 2;
       img {
         display: none;
