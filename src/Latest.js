@@ -7,6 +7,7 @@ import theme from './theme';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
 import { sourceOptions, endpoint, mediaQueries } from './config';
+import Spinner from './Spinner';
 
 const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
@@ -116,12 +117,6 @@ function formatDate(ms) {
   return format(date, 'DD/MM - HH:mm');
 }
 
-function Loading() {
-  return (
-    <p style={{textAlign: 'center'}}>Cargando....</p>
-  );
-}
-
 class Latest extends Component {
   containerRef = null
   state = {
@@ -222,7 +217,7 @@ class Latest extends Component {
               </li>
             ))}
           </List>
-          {loading && <Loading />}
+          {loading && <Spinner />}
           <Waypoint scrollableAncestor={this.containerRef} onEnter={this.handleNextPage}>
             <div style={{height: 50, width: 10}}></div>
           </Waypoint>

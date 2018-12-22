@@ -8,6 +8,7 @@ import format from 'date-fns/format';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 import MagnetPlayer from './MagnetPlayer';
+import Spinner from './Spinner';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -337,7 +338,7 @@ class Show extends Component {
       current: 'En emisión'
     }
     if (loadingShow) {
-      return <Loading>Cargando...</Loading>
+      return <Spinner />
     }
     const nextEpisode = this.getNextEpisode();
     const url = this.props.location.pathname;
