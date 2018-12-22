@@ -123,6 +123,16 @@ const ShowStyles = styled.main`
         border-color: ${theme.colors.secondaryDark};
       }
     }
+    @media (max-width: 420px) {
+      flex-direction: column;
+      .qualities {
+        margin-bottom: 16px;
+        align-self: flex-start;
+      }
+      > a {
+        align-self: flex-end;
+      }
+    }
   }
 `;
 
