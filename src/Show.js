@@ -13,11 +13,16 @@ import Spinner from './Spinner';
 const ShowStyles = styled.main`
   overflow-y: auto;
   max-height: calc(100vh - 60px);
+  .wrapper-top {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 8px;
+    padding-bottom: 0;
+  }
   .wrapper {
     max-width: 1024px;
     margin: 0 auto;
     margin-bottom: 24px;
-    margin-top: 6px;
     padding: 0 8px;
     display: flex;
     align-items: flex-start;
@@ -29,18 +34,24 @@ const ShowStyles = styled.main`
       }
       main {
         margin: 0;
-        h2 {
-          text-align: center;
-        }
       }
     }
   }
   .mobile-cover {
     display: block;
-    margin: 0 auto;
     max-width: 240px;
     @media (min-width: 786px) {
       display: none;
+    }
+  }
+  .back-btn {
+    .material-icons {
+      font-size: 16px;
+      margin-right: 4px;
+    }
+    @media (max-width: 420px) {
+      margin-left: 0;
+      margin-bottom: 8px;
     }
   }
   aside {
@@ -57,10 +68,7 @@ const ShowStyles = styled.main`
         display: none;
       }
     }
-    .material-icons {
-      font-size: 16px;
-      margin-right: 4px;
-    }
+    
   }
   main {
     flex: 1 1 0%;
@@ -68,7 +76,7 @@ const ShowStyles = styled.main`
   }
   
   .meta {
-    margin-top: 60px;
+    margin-top: 24px;
     h2 {
       margin-top: 6px;
       margin-bottom: 16px;
@@ -165,12 +173,6 @@ const List = styled.ul`
       }
     }
   }
-`;
-
-const Loading = styled.p`
-  text-align: center;
-  font-size: 24px;
-  margin-top: 16px;
 `;
 
 class Show extends Component {
@@ -354,14 +356,17 @@ class Show extends Component {
     const url = this.props.location.pathname;
     return (
       <ShowStyles>
-        <div className="wrapper">
-          <img className="mobile-cover" src={show.posterImage.small} alt="portada del show" />
-          <aside>
-            <Button main className="back-btn" 
-              onClick={() => window.history.back()}>
+        <div className="wrapper-top">
+          <Link to="/">
+            <Button main className="back-btn">
               <i className="material-icons">arrow_back</i>
               <span>Volver</span>
             </Button>
+          </Link>
+          <img className="mobile-cover" src={show.posterImage.small} alt="portada del show" />
+        </div>        
+        <div className="wrapper">
+          <aside>
             <img src={show.posterImage.small} alt="portada del show" />
             <div className="search-box" 
               title="Escribe un numero y pulsa enter ⏎">
