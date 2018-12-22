@@ -108,7 +108,7 @@ class MagnetPlayer extends Component {
       const biggestFile = this.selectBiggestFile(files);
       this.setState({
         loading: false,
-        videoMime: biggestFile.mime,
+        videoMime: biggestFile.mime === 'video/x-matroska' ? 'video/webm' : biggestFile.mime,
         videoUrl: `${downloaderApi}${biggestFile.link}`
       })
       // updateWatchedEpisodes(this.props.episodeData);
@@ -173,15 +173,15 @@ class MagnetPlayer extends Component {
             src={`${this.state.videoUrl}?transform=subs`}
           />
         </Player>
-        <p>
+        <p className="dl-link">
           <a download={filenames.video}
              href={this.state.videoUrl}>
             Descargar video
           </a>
         </p>
-        <p>
+        <p className="dl-link">
           <a download={filenames.subs}
-             href={`${this.state.videoUrl}?ffmpeg=subs`}>
+             href={`${this.state.videoUrl}?transform=subs`}>
             Descargar subtitulos
           </a>
         </p>
