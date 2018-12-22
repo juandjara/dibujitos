@@ -21,7 +21,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "copy": "cp build/index.html build/200.html",
+    "clean": "rm -rf build",
+    "surge": "surge build dibujitos.fuken.xyz",
+    "deploy": "npm run clean && npm run build && npm run copy && npm run surge"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,5 +35,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "surge": "^0.20.1"
+  }
 }
