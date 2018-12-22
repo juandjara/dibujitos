@@ -41,6 +41,10 @@ const HeaderStyle = styled.header`
       background: transparent;
       color: white;
       min-width: 200px;
+      &::placeholder {
+        color: white;
+        opacity: 0.5;
+      }
     }
     .material-icons {
       opacity: 0.5;
