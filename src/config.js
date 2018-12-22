@@ -7,3 +7,4 @@ export const mediaQueries = {
   less420: '(max-width: 420px)'
 }
 export const endpoint = "https://nyapi.fuken.xyz";
+export const downloaderApi = 'https://palomitas-dl.fuken.xyz'

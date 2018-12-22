@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { sourceOptions, endpoint } from './config';
 import styled from 'styled-components';
 import Select from 'react-select';
@@ -6,6 +6,8 @@ import Icon from './Icon';
 import theme from './theme';
 import format from 'date-fns/format';
 import Button from './Button';
+import { Link } from 'react-router-dom';
+import MagnetPlayer from './MagnetPlayer';
 
 const ShowStyles = styled.main`
   overflow-y: auto;
@@ -107,6 +109,18 @@ const ShowStyles = styled.main`
     label {
       display: block;
       margin-bottom: 4px;
+    }
+  }
+  .video-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    button {
+      border-color: transparent;
+      &:hover, &:focus {
+        border-color: ${theme.colors.secondaryDark};
+      }
     }
   }
 `;
@@ -243,11 +257,19 @@ class Show extends Component {
   }
 
   selectEpisode(ep) {
+    if (!ep) {
+      return;
+    }
+    Object.keys(ep.qualities).forEach(key => {
+      ep.qualities[key].key = key;
+    });
     const firsTorrentKey = Object.keys(ep.qualities)
       .find(key => ep.qualities[key]);
+    const torrent = ep.qualities['720p'] || ep.qualities['480p'] || ep.qualities[firsTorrentKey];
+    
     this.setState({
       selectedEpisode: ep,
-      selectedTorrent: ep.qualities['720p'] || ep.qualities['480p'] || ep.qualities[firsTorrentKey]
+      selectedTorrent: torrent
     });
   }
 
@@ -284,6 +306,13 @@ class Show extends Component {
     this.props.history.push(`${url}?ep=${ep.episodeNumber}`);
   }
 
+  getNextEpisode() {
+    const {show, selectedEpisode} = this.state;
+    return selectedEpisode && show.episodes.find(
+      ep => ep.episodeNumber === selectedEpisode.episodeNumber + 1
+    );
+  }
+
   episodeIsSelected(episode) {
     return this.state.selectedEpisode 
       && this.state.selectedEpisode.episodeNumber === episode.episodeNumber;
@@ -300,7 +329,8 @@ class Show extends Component {
   render() {
     const {
       loadingShow, loadingEpisodes,
-      show, source, pageHasNext, search
+      show, source, pageHasNext, search,
+      selectedEpisode, selectedTorrent
     } = this.state;
     const statusMap = {
       finished: 'Finalizada',
@@ -309,6 +339,8 @@ class Show extends Component {
     if (loadingShow) {
       return <Loading>Cargando...</Loading>
     }
+    const nextEpisode = this.getNextEpisode();
+    const url = this.props.location.pathname;
     return (
       <ShowStyles>
         <div className="wrapper">
@@ -351,7 +383,7 @@ class Show extends Component {
             )}
           </aside>
           <main>
-            <div className="meta">
+            <section className="meta">
               <h2>{show.canonicalTitle}</h2>
               <p>
                 <small>
@@ -361,7 +393,7 @@ class Show extends Component {
                 </small>
               </p>
               <p>{show.description}</p>
-            </div>
+            </section>
             <div className="select-box">
               <label htmlFor="sort">Fuente</label>
               <Select
@@ -371,7 +403,27 @@ class Show extends Component {
                 onChange={this.handleSourceChange}
               />
             </div>
-
+            {selectedEpisode && (
+              <Fragment>
+                <section className="video-toolbar">
+                  <div className="qualities">
+                    {Object.keys(selectedEpisode.qualities).map(key => (
+                      <Button key={key} 
+                        main={key === selectedTorrent.key}
+                        onClick={() => this.setState({selectedTorrent: selectedEpisode.qualities[key]})}>
+                        {key}
+                      </Button>
+                    ))}
+                  </div>
+                  {nextEpisode && (
+                    <Link to={`${url}?ep=${nextEpisode.episodeNumber}`}>
+                      <Button main>Siguiente episodio</Button>
+                    </Link>
+                  )}
+                </section>
+                <MagnetPlayer magnet={selectedTorrent.magnet} />
+              </Fragment>
+            )}
           </main>
         </div>
       </ShowStyles>
