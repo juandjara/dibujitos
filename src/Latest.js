@@ -148,6 +148,11 @@ class Latest extends Component {
     }
   }
 
+  componentDidCatch(err) {
+    console.error('[Latest.componentDidCatch] \n', err);
+    window.alert('Algo ha fallado :c');
+  }
+
   async fetch() {
     this.setState({loading: true});
     const {page, source} = this.state;
