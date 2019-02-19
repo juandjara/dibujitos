@@ -148,11 +148,6 @@ class Latest extends Component {
     }
   }
 
-  componentDidCatch(err) {
-    console.error('[Latest.componentDidCatch] \n', err);
-    window.alert('Algo ha fallado :c');
-  }
-
   async fetch() {
     this.setState({loading: true});
     const {page, source} = this.state;
@@ -235,7 +230,7 @@ class Latest extends Component {
             {episodes.map((ep, i) => (
               <EpisodeCard key={`${ep.slug}-${ep.episodeNumber}`}>
                 <Link to={`/show/${ep.slug}`}>
-                  <img src={ep.posterImage.small} alt="portada del show" />
+                  <img src={ep.posterImage && ep.posterImage.small} alt="portada del show" />
                   <div>
                     <p className="title">
                       <span>{ep.showTitle}</span>
