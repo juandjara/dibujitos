@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from './Button';
+import {Link} from 'react-router-dom';
 
 const Container = styled.div`
   text-align: center;
@@ -21,10 +22,12 @@ const Container = styled.div`
 const NotFound = () => (
   <Container>
     <h2>Aqui no hay nada ¯\_(ツ)_/¯</h2>
-    <Button main onClick={() => window.history.back()}>
-      <i className="material-icons">arrow_back</i>
-      <span>Volver atrás</span>
-    </Button>
+    <Link to="/">
+      <Button main>
+        <i className="material-icons">arrow_back</i>
+        <span>Volver</span>
+      </Button>
+    </Link>
   </Container>
 )
 export default NotFound;

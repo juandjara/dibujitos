@@ -299,6 +299,9 @@ class Show extends Component {
     const search = this.state.search ? ' ' + this.state.search : '';
     const url = `${endpoint}/show/${slug}${search}?page=${page}&meta=${meta}&source=${source.value}`;
     const res = await window.fetch(url);
+    if (res.status === 404) {
+      this.props.history.replace('/not-found');
+    }
     const json = await res.json();
     json.episodes.sort((a, b) => b.episodeNumber - a.episodeNumber);
     return this.awaitState(state => {
@@ -317,6 +320,7 @@ class Show extends Component {
         show: {
           ...state.show,
           ...json,
+          posterImage: json.posterImage && json.posterImage.small,
           episodes
         }
       }
@@ -351,7 +355,7 @@ class Show extends Component {
     const slug = this.props.match.params.slug;
     const data = {
       epNumber,
-      img: posterImage.small,
+      img: posterImage,
       title: canonicalTitle,
       id: slug
     };
@@ -382,11 +386,11 @@ class Show extends Component {
               <span>Volver</span>
             </Button>
           </Link>
-          <img className="mobile-cover" src={show.posterImage.small} alt="portada del show" />
+          <img className="mobile-cover" src={show.posterImage} alt="portada del show" />
         </div>        
         <div className="wrapper">
           <aside>
-            <img src={show.posterImage.small} alt="portada del show" />
+            <img src={show.posterImage} alt="portada del show" />
             <div className="search-box" 
               title="Escribe un numero y pulsa enter ⏎">
               <Icon icon="search" />
