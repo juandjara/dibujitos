@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Latest from './Latest';
 import Calendar from './Calendar';
+import RawSearch from './Rawsearch';
+import { Route, Switch } from 'react-router-dom';
 
 const HomeStyles = styled.main`
   display: flex;
@@ -29,7 +31,13 @@ function Home({location}) {
   const search = urlParams.get('search') || '';
   return (
     <HomeStyles>
-      <Latest search={search} />
+      <Switch>
+        <Route exact path="/home" 
+          render={() => (<Latest search={search} />)} />
+        <Route path="/home/rawsearch" 
+          render={() => (<RawSearch search={search} />)} />
+
+      </Switch>
       <Calendar />
     </HomeStyles>
   );

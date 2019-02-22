@@ -4,6 +4,7 @@ import Icon from './Icon';
 import theme from './theme';
 import { withRouter, Link } from 'react-router-dom';
 import Headroom from 'react-headroom';
+import SearchBox from './SearchBox';
 
 const HeaderStyle = styled.header`
   display: flex;
@@ -27,29 +28,6 @@ const HeaderStyle = styled.header`
     line-height: 36px;
     font-weight: 300;
     margin-left: 4px;
-  }
-  .search-box {
-    background-color: rgba(255,255,255, 0.2);
-    border-radius: 8px;
-    margin: 0 auto;
-    input {
-      font-size: 16px;
-      line-height: 26px;
-      padding: 2px 8px;
-      outline: none;
-      border: 2px solid transparent;
-      background: transparent;
-      color: white;
-      min-width: 200px;
-      &::placeholder {
-        color: white;
-        opacity: 0.5;
-      }
-    }
-    .material-icons {
-      opacity: 0.5;
-      padding-right: 4px;
-    }
   }
 `;
 
@@ -78,7 +56,7 @@ class Header extends React.Component {
             <h2>Dibujitos</h2>
           </Link>
           <div style={{flexGrow: 1}}></div>
-          <div className="search-box">
+          <SearchBox>
             <input
               type="search"
               ref={node => this.inputNode = node}
@@ -87,7 +65,7 @@ class Header extends React.Component {
               onKeyUp={this.handleKeyUp}
               placeholder="¿Que quieres ver?" />
             <Icon icon="search" />
-          </div>
+          </SearchBox>
         </HeaderStyle>
       </Headroom>
     );

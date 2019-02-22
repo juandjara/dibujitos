@@ -152,7 +152,6 @@ class Latest extends Component {
     this.setState({loading: true});
     const {page, source} = this.state;
     const search = this.props.search;
-    console.log('fetching with props ', [page, source.value, search])
     const url = `${endpoint}/latest?page=${page}&q=${search}&source=${source.value}`;
     const res = await window.fetch(url);
     const json = await res.json();
