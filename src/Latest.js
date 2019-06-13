@@ -8,7 +8,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
 import { sourceOptions, endpoint, mediaQueries } from './config';
 import Spinner from './Spinner';
-import { getWatchedEpisodes } from './lastWatchedService';
+import { getWatchedEpisodes, removeWatchedEpisode } from './lastWatchedService';
+import Icon from './Icon';
 
 const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
@@ -119,6 +120,22 @@ const EpisodeCard = styled.li`
       margin-right: 6px;
     }
   }
+  .close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px;
+    background: rgba(255,255,255, 0.75);
+    opacity: 0.5;
+    border: none;
+    cursor: pointer;
+    .material-icons {
+      font-size: 14px;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
 `;
 
 function formatDate(ms) {
@@ -181,6 +198,13 @@ class Latest extends Component {
     }), () => this.fetch())
   }
 
+  removeWatchedEpisode(ev, ep) {
+    ev.preventDefault();
+    removeWatchedEpisode(ep);
+    // TODO: replace hacky way for to force update
+    this.setState({loading: this.state.loading});
+  }
+
   render() {
     const search = this.props.search;
     const {loading, source, episodes} = this.state;
@@ -206,6 +230,9 @@ class Latest extends Component {
                       <span>Ep. {ep.epNumber}</span>
                     </p>
                   </div>
+                  <button onClick={ev => this.removeWatchedEpisode(ev, ep)} className="close-btn">
+                    <Icon icon="close" />
+                  </button>
                 </Link>
               </EpisodeCard>
             ))}

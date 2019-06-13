@@ -46,3 +46,8 @@ ul {
 .material-icons {
   vertical-align: middle;
 }
+
+input,
+button {
+  outline: none;
+}
