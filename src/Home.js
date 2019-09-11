@@ -18,10 +18,7 @@ const HomeStyles = styled.main`
   @media (max-width: 920px) {
     flex-direction: column-reverse;
     justify-content: flex-start;
-    align-items: center;
-    /* .column {
-      max-height: 100%;
-    } */
+    align-items: stretch;
   }
 `;
 
@@ -36,7 +33,6 @@ function Home({location}) {
           render={() => (<Latest search={search} />)} />
         <Route path="/home/rawsearch" 
           render={() => (<RawSearch search={search} />)} />
-
       </Switch>
       <Calendar />
     </HomeStyles>

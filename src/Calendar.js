@@ -13,18 +13,18 @@ const List = styled.ul`
     margin-bottom: 20px;
   }
   h3 {
-    margin-left: 20px;
+    margin-left: 8px;
     margin-bottom: 0;
-    margin-top: 30px;
-    font-weight: normal;
-    font-size: 20px;
+    margin-top: 2rem;
+    font-weight: lighter;
+    font-size: 24px;
   }
   li {
-    padding: 0 20px;
+    padding: 0 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 15px 0;
+    margin: 14px 0;
     a {
       flex: 1;
       margin-right: 10px;
@@ -34,23 +34,24 @@ const List = styled.ul`
     }
   }
   .nodata {
-    margin-left: 20px;
-    margin-top: 5px;
+    margin-left: 8px;
+    margin-top: 4px;
     opacity: 0.8;
   }
 `;
 
 const root = window.matchMedia(mediaQueries.more920).matches ?
   PerfectScrollbar : 'div';
+
 const CalendarStyles = styled(root)`
   @media (min-width: 920px) {
     flex-basis: 460px;
   }
   header {
-    padding: 0 20px;
+    padding: 0 8px;
     h2 {
       font-weight: normal;
-      margin-top: 20px;
+      margin-top: 24px;
       margin-bottom: 5px;
     }
     p {

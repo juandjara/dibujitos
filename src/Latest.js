@@ -18,11 +18,13 @@ const LatestStyles = styled(root)`
   .column-inner {
     max-width: 768px;
     margin: 0 auto;
+  }
+  .last-watched {
+    margin: 3rem 0;
     > h2 {
       font-weight: normal;
-      margin-top: 25px;
       margin-left: 6px;
-      margin-bottom: 4px;
+      margin-bottom: .5rem;
     }
   }
 `;
@@ -31,20 +33,21 @@ const Header = styled.header`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
-  margin: 14px;
-  margin-top: 36px;
+  align-items: flex-end;
+  margin: 14px 6px;
   .title {
+    margin-right: 2rem;
     > h2 {
       font-weight: normal;
-      margin-top: 25px;
-      margin-bottom: 5px;
+      margin-top: 24px;
+      margin-bottom: 8px;
     }
     > p {
-      margin-top: 5px;
+      margin-top: 8px;
     }
   }
   .select-box {
+    margin-top: 1rem;
     min-width: 210px;
     label {
       display: block;
@@ -57,15 +60,15 @@ const List = styled.ul`
   padding: 0;
   margin: 0;
   list-style: none;
-  margin-bottom: 20px;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   ${props => props.horizontal ? `
-  flex-wrap: nowrap;
-  overflow-x: scroll;
-  ` : `
-  flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    justify-content: flex-start;
+  `:`
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   `}
   @media (max-width: 420px) {
     display: block;
@@ -129,6 +132,7 @@ const EpisodeCard = styled.li`
     opacity: 0.5;
     border: none;
     cursor: pointer;
+    border-bottom-left-radius: 4px;
     .material-icons {
       font-size: 14px;
     }
@@ -213,13 +217,11 @@ class Latest extends Component {
       <LatestStyles className="column"
         containerRef={ref => this.containerRef = ref}>
         <div className="column-inner">
-          <p style={{textAlign: 'center', margin: '1em'}}>
-            Capitulos de anime en streaming desde torrents de HorribleSubs
-          </p>
-          {lastwatched.length > 0 && (
-            <h2>Ultimamente has visto</h2>
-          )}
-          <List horizontal>
+          <div className="last-watched">
+            {lastwatched.length > 0 && (
+              <h2>Ultimamente has visto</h2>
+            )}
+            <List horizontal>
             {lastwatched.map(ep => (
               <EpisodeCard key={`${ep.id}-${ep.epNumber}`}>
                 <Link to={`/show/${ep.id}?ep=${ep.epNumber}`}>
@@ -237,6 +239,7 @@ class Latest extends Component {
               </EpisodeCard>
             ))}
           </List>
+          </div>
           <Header>
             <div className="title">
               <h2>{search ? 'Resultados de la búsqueda' : 'Ultimos Capitulos'}</h2>
@@ -252,6 +255,9 @@ class Latest extends Component {
               />
             </div>
           </Header>
+          <p style={{fontSize: 18, margin: '2rem 6px 1em 6px'}}>
+            Capitulos de anime en streaming desde torrents de HorribleSubs
+          </p>
           <List>
             {episodes.map((ep, i) => (
               <EpisodeCard key={`${ep.slug}-${ep.episodeNumber}`}>
