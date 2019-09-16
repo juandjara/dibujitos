@@ -30,9 +30,6 @@ const ShowStyles = styled.main`
     justify-content: flex-start;
     @media (max-width: 786px) {
       flex-direction: column;
-      aside {
-        margin-top: 24px;
-      }
       main {
         margin: 0;
       }
@@ -77,15 +74,17 @@ const ShowStyles = styled.main`
   }
   
   .meta {
-    margin-top: 24px;
     h2 {
-      margin-top: 6px;
-      margin-bottom: 16px;
-      font-weight: 400;
+      font-size: 2rem;
+      font-weight: lighter;
+      margin-top: .75rem;
+      margin-bottom: 1rem;
     }
-    p + p {
-      margin-top: 4px;
-      margin-bottom: 16px;
+    p {
+      line-height: 1.5;
+      font-size: 18px;
+      margin-top: .25rem;
+      margin-bottom: 2rem;
     }
     small {
       font-size: 14px;
@@ -97,9 +96,14 @@ const ShowStyles = styled.main`
     border-radius: 8px;
     border: 1px solid #e4e4e4;
     display: inline-block;
-    margin-bottom: 12px;
     &:hover {
       border-color: #ccc;
+    }
+    & + p {
+      margin: 0 2px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 1rem;
     }
     input {
       font-size: 14px;
@@ -118,7 +122,6 @@ const ShowStyles = styled.main`
   .select-box {
     min-width: 210px;
     display: inline-block;
-    margin-top: 8px;
     label {
       display: block;
       margin-bottom: 4px;
@@ -128,7 +131,7 @@ const ShowStyles = styled.main`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 18px;
+    margin-top: 2rem;
     button {
       border-color: transparent;
       &:hover, &:focus {
@@ -150,8 +153,8 @@ const ShowStyles = styled.main`
 
 const List = styled.ul`
   list-style: none;
-  margin-top: 8px;
-  margin-bottom: 12px;
+  margin-top: .5rem;
+  margin-bottom: 1rem;
   max-height: 300px;
   overflow-y: auto;
   li {
@@ -402,7 +405,7 @@ class Show extends Component {
                 onKeyUp={this.handleKeyUp}
                 placeholder="Buscar ep. por numero" />
             </div>
-            <p style={{margin: '0 4px'}}>Episodios</p>
+            <p>Episodios</p>
             <List>
               {show.episodes.map(ep => (
                 <li tabIndex={0} key={ep.episodeNumber}
@@ -426,13 +429,11 @@ class Show extends Component {
           <main>
             <section className="meta">
               <h2>{show.canonicalTitle}</h2>
-              <p>
-                <small>
-                  {new Date(show.startDate).getFullYear()}
-                  {' - '}
-                  {statusMap[show.status]}
-                </small>
-              </p>
+              <small>
+                {new Date(show.startDate).getFullYear()}
+                {' - '}
+                {statusMap[show.status]}
+              </small>
               <p>{show.description}</p>
             </section>
             <div className="select-box">
