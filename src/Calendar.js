@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
+import Button from './Button'
 
 const List = styled.ul`
   margin: 0;
@@ -54,6 +55,29 @@ const CalendarStyles = styled.div`
       margin-top: 5px;
       opacity: .8;
     }
+    .tabs {
+      display: flex;
+      margin-top: 2rem;
+
+      button {
+        border: 1px solid transparent;
+        border-bottom-color: #ccc;
+        border-radius: 4px 4px 0 0;
+        margin: 0;
+        padding: .5rem 0;
+        width: 56px;
+        &:hover {
+          background-color: #eee;
+        }
+      }
+      .selected {
+        border-color: #ccc;
+        border-bottom-color: transparent;
+      }
+      span {
+        padding: .5rem 1rem;
+      }
+    }
   }
 `;
 
@@ -76,12 +100,25 @@ function formatTime(timeStr) {
   return format(date, 'HH:MM');
 }
 
+function CalendarDay ({group}) {
+  console.log('rendering CalendarDay with ', group)
+  return (
+    <List>
+      <p className="nodata">{group.animes.length ? '' : 'Sin capítulos este día'}</p>
+      {group.animes.map(item => (
+        <li key={item.slug + group.day + item.time}>
+          <Link to={item.slug}>{item.title}</Link>
+          <p>{formatTime(item.time)}</p>
+        </li>
+      ))}
+    </List>
+  )
+}
+
 const endpoint = "https://nyapi.fuken.xyz";
 function Calendar() {
+  const [day, setDay] = useState(0);
   const [calendar, setCalendar] = useState([]);
-
-  // using an empty watchilist runs the effect only on mount and unmount
-  const propsWatchlist = [];
   useEffect(async () => {
     const url = `${endpoint}/calendar`;
     const data = await window.fetch(url);
@@ -98,28 +135,26 @@ function Calendar() {
       return elem;
     }).slice(1);
     setCalendar(cal);
-  }, propsWatchlist)
+  }, [])
+
+  const titles = calendar.map(group => (dayMap[group.day] || group.day || '').slice(0, 3))
 
   return ( 
     <CalendarStyles className="column">
       <header>
         <h2>Calendario</h2>
         <p>Horario de emision de capitulos de HorribleSubs</p>
-      </header>
-      {calendar.map(group => (
-        <List key={group.day}>
-          <h3>{dayMap[group.day] || group.day}</h3>
-          <p className="nodata">
-            {group.animes.length ? '' : 'Sin capítulos este día'}
-          </p>
-          {group.animes.map(item => (
-            <li key={item.slug + group.day + item.time}>
-              <Link to={item.slug}>{item.title}</Link>
-              <p>{formatTime(item.time)}</p>
-            </li>
+        <div className="tabs">
+          {titles.map((text, index) => (
+            <Button key={text} clear 
+              onClick={() => setDay(index)}
+              className={index === day ? 'selected' : ''}>
+              {text}.
+            </Button>
           ))}
-        </List>
-      ))}
+        </div>
+      </header>
+      {calendar[day] && <CalendarDay group={calendar[day]} />}
     </CalendarStyles>
   );
 }
