@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 const VideoStyles = styled.div`
   .video-react {
-    margin: 1em 0;
+    margin: .5rem 0;
     .play-btn {
       border: none !important;
       background: none !important;
@@ -27,7 +27,7 @@ const VideoStyles = styled.div`
 `;
 
 const VideoPlaceholder = styled.div`
-  margin: 1em 0;
+  margin: .5rem 0;
   background: #111;
   position: relative;
   height: 0;

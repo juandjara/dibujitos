@@ -19,6 +19,9 @@ const ShowStyles = styled.main`
     margin: 0 auto;
     padding: 8px;
     padding-bottom: 0;
+    button {
+      margin-left: 0;
+    }
   }
   .wrapper {
     max-width: 1024px;
@@ -56,9 +59,8 @@ const ShowStyles = styled.main`
     flex: 0 0 0%;
     img {
       display: block;
-      margin-top: 6px;
-      margin-left: 2px;
-      margin-bottom: 16px;
+      margin-top: .5rem;
+      border-radius: 4px;
     }
     @media (max-width: 786px) {
       order: 2;
@@ -96,6 +98,7 @@ const ShowStyles = styled.main`
     border-radius: 8px;
     border: 1px solid #e4e4e4;
     display: inline-block;
+    margin: 1.5rem 0;
     &:hover {
       border-color: #ccc;
     }
@@ -103,7 +106,6 @@ const ShowStyles = styled.main`
       margin: 0 2px;
       font-size: 14px;
       font-weight: bold;
-      margin-top: 1rem;
     }
     input {
       font-size: 14px;
@@ -132,6 +134,15 @@ const ShowStyles = styled.main`
     justify-content: space-between;
     align-items: center;
     margin-top: 2rem;
+    .qualities {
+      margin-right: .5rem;
+      button:first-child {
+        margin-left: 0;
+      }
+    }
+    > p {
+      flex-grow: 1;
+    }
     button {
       border-color: transparent;
       &:hover, &:focus {
@@ -139,13 +150,10 @@ const ShowStyles = styled.main`
       }
     }
     @media (max-width: 420px) {
-      flex-direction: column;
+      flex-wrap: wrap;
       .qualities {
-        margin-bottom: 16px;
-        align-self: flex-start;
-      }
-      > a {
-        align-self: flex-end;
+        margin-bottom: .5rem;
+        flex-basis: 100%;
       }
     }
   }
@@ -457,6 +465,7 @@ class Show extends Component {
                       </Button>
                     ))}
                   </div>
+                  <p>Ep. {selectedEpisode.episodeNumber}</p>
                   {nextEpisode && (
                     <Link to={`${url}?ep=${nextEpisode.episodeNumber}`}>
                       <Button main>Siguiente episodio</Button>
