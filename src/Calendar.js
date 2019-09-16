@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import { mediaQueries } from './config';
 
 const List = styled.ul`
   margin: 0;
@@ -17,7 +15,7 @@ const List = styled.ul`
     margin-bottom: 0;
     margin-top: 2rem;
     font-weight: lighter;
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   li {
     padding: 0 8px;
@@ -40,18 +38,16 @@ const List = styled.ul`
   }
 `;
 
-const root = window.matchMedia(mediaQueries.more920).matches ?
-  PerfectScrollbar : 'div';
-
-const CalendarStyles = styled(root)`
+const CalendarStyles = styled.div`
   @media (min-width: 920px) {
-    flex-basis: 460px;
+    flex-basis: 420px;
   }
   header {
     padding: 0 8px;
     h2 {
+      font-size: 1.5rem;
       font-weight: normal;
-      margin-top: 24px;
+      margin-top: 2.5rem;
       margin-bottom: 5px;
     }
     p {

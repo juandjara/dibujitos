@@ -4,23 +4,19 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import theme from './theme';
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import Waypoint from 'react-waypoint';
-import { sourceOptions, endpoint, mediaQueries } from './config';
+import { sourceOptions, endpoint } from './config';
 import Spinner from './Spinner';
 import { getWatchedEpisodes, removeWatchedEpisode } from './lastWatchedService';
 import Icon from './Icon';
 
-const root = window.matchMedia(mediaQueries.more920).matches ?
-  PerfectScrollbar : 'div';
-const LatestStyles = styled(root)`
+const LatestStyles = styled.div`
   flex-grow: 1;
   .column-inner {
     max-width: 768px;
     margin: 0 auto;
   }
   .last-watched {
-    margin: 3rem 0;
     > h2 {
       font-weight: normal;
       margin-left: 6px;
@@ -34,16 +30,23 @@ const Header = styled.header`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
-  margin: 14px 6px;
+  margin: 16px 8px;
+
+  & + p {
+    margin: .5rem;
+    margin-top: 2rem;
+  }
+
   .title {
     margin-right: 2rem;
     > h2 {
-      font-weight: normal;
+      font-weight: lighter;
+      font-size: 2rem;
       margin-top: 24px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
-    > p {
-      margin-top: 8px;
+    p {
+      color: #999;
     }
   }
   .select-box {
@@ -51,7 +54,7 @@ const Header = styled.header`
     min-width: 210px;
     label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
   }
 `;
@@ -238,7 +241,7 @@ class Latest extends Component {
                 </Link>
               </EpisodeCard>
             ))}
-          </List>
+            </List>
           </div>
           <Header>
             <div className="title">
@@ -255,9 +258,7 @@ class Latest extends Component {
               />
             </div>
           </Header>
-          <p style={{fontSize: 18, margin: '2rem 6px 1em 6px'}}>
-            Capitulos de anime en streaming desde torrents de HorribleSubs
-          </p>
+          <p>Capitulos de anime en streaming desde torrents de HorribleSubs</p>
           <List>
             {episodes.map((ep, i) => (
               <EpisodeCard key={`${ep.slug}-${ep.episodeNumber}`}>

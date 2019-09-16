@@ -9,12 +9,6 @@ const HomeStyles = styled.main`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  @media (min-width: 920px) {
-    .column {
-      overflow-y: auto;
-      max-height: calc(100vh - 60px);
-    }
-  }
   @media (max-width: 920px) {
     flex-direction: column-reverse;
     justify-content: flex-start;
