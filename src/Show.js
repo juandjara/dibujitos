@@ -58,6 +58,7 @@ const ShowStyles = styled.main`
   aside {
     flex: 0 0 0%;
     img {
+      min-width: 250px;
       display: block;
       margin-top: .5rem;
       border-radius: 4px;
@@ -259,6 +260,7 @@ class Show extends Component {
     .then(() => {
       const epList = this.state.show.episodes; 
       const ep = epList.find(ep => ep.episodeNumber === Number(this.state.search)) || epList[0];
+      debugger
       this.selectEpisode(ep);
     });
   }
@@ -331,7 +333,7 @@ class Show extends Component {
         show: {
           ...state.show,
           ...json,
-          posterImage: json.posterImage && json.posterImage.small,
+          posterImage: (state.show && state.show.posterImage) || (json.posterImage && json.posterImage.small),
           episodes
         }
       }
