@@ -260,7 +260,6 @@ class Show extends Component {
     .then(() => {
       const epList = this.state.show.episodes; 
       const ep = epList.find(ep => ep.episodeNumber === Number(this.state.search)) || epList[0];
-      debugger
       this.selectEpisode(ep);
     });
   }
