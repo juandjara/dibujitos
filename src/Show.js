@@ -266,9 +266,10 @@ class Show extends Component {
 
   handleNextPage = () => {
     this.setState(
-      ({page}) => ({
+      ({page, search}) => ({
+        search: '',
         loadingEpisodes: true,
-        page: page + 1
+        page: search ? 0 : page + 1
       }), () => {
         this.fetchShow();
       }
