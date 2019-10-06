@@ -18,7 +18,9 @@ const LatestStyles = styled.div`
   }
   .last-watched {
     > h2 {
-      font-weight: normal;
+      font-weight: lighter;
+      font-size: 20px;
+      margin-top: 2rem;
       margin-left: 6px;
       margin-bottom: .5rem;
     }
@@ -225,22 +227,22 @@ class Latest extends Component {
               <h2>Ultimamente has visto</h2>
             )}
             <List horizontal>
-            {lastwatched.map(ep => (
-              <EpisodeCard key={`${ep.id}-${ep.epNumber}`}>
-                <Link to={`/show/${ep.id}?ep=${ep.epNumber}`}>
-                  <img src={ep.img} alt="portada del show" />
-                  <div>
-                    <p className="title">
-                      <span>{ep.title}</span>
-                      <span>Ep. {ep.epNumber}</span>
-                    </p>
-                  </div>
-                  <button onClick={ev => this.removeWatchedEpisode(ev, ep)} className="close-btn">
-                    <Icon icon="close" />
-                  </button>
-                </Link>
-              </EpisodeCard>
-            ))}
+              {lastwatched.map(ep => (
+                <EpisodeCard key={`${ep.id}-${ep.epNumber}`}>
+                  <Link to={`/show/${ep.id}?ep=${ep.epNumber}`}>
+                    <img src={ep.img} alt="portada del show" />
+                    <div>
+                      <p className="title">
+                        <span>{ep.title}</span>
+                        <span>Ep. {ep.epNumber}</span>
+                      </p>
+                    </div>
+                    <button onClick={ev => this.removeWatchedEpisode(ev, ep)} className="close-btn">
+                      <Icon icon="close" />
+                    </button>
+                  </Link>
+                </EpisodeCard>
+              ))}
             </List>
           </div>
           <Header>
