@@ -138,6 +138,9 @@ const ShowStyles = styled.main`
     margin-bottom: 2rem;
     .qualities {
       margin-right: .5rem;
+      button {
+        min-width: 60px;
+      }
       button:first-child {
         margin-left: 0;
       }
