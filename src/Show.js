@@ -77,6 +77,7 @@ const ShowStyles = styled.main`
   }
   
   .meta {
+    margin-bottom: 2rem;
     h2 {
       font-size: 2rem;
       font-weight: lighter;
@@ -87,7 +88,6 @@ const ShowStyles = styled.main`
       line-height: 1.5;
       font-size: 18px;
       margin-top: .25rem;
-      margin-bottom: 2rem;
     }
     small {
       font-size: 14px;
@@ -134,7 +134,8 @@ const ShowStyles = styled.main`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: .5rem;
+    margin-bottom: 2rem;
     .qualities {
       margin-right: .5rem;
       button:first-child {
@@ -446,17 +447,11 @@ class Show extends Component {
               </small>
               <p>{show.description}</p>
             </section>
-            <div className="select-box">
-              <label htmlFor="sort">Fuente</label>
-              <Select
-                isSearchable={false}
-                value={source}
-                options={sourceOptions}
-                onChange={this.handleSourceChange}
-              />
-            </div>
             {selectedEpisode && (
               <Fragment>
+                <MagnetPlayer
+                  magnet={selectedTorrent.magnet}
+                  onLoaded={() => this.updateLastWatched()} />
                 <section className="video-toolbar">
                   <div className="qualities">
                     {selectedEpisode.qualitiesFlat.map(torrent => (
@@ -474,8 +469,15 @@ class Show extends Component {
                     </Link>
                   )}
                 </section>
-                <MagnetPlayer magnet={selectedTorrent.magnet}
-                  onLoaded={() => this.updateLastWatched()} />
+                <div className="select-box">
+                  <label htmlFor="sort">Fuente</label>
+                  <Select
+                    isSearchable={false}
+                    value={source}
+                    options={sourceOptions}
+                    onChange={this.handleSourceChange}
+                  />
+                </div>
               </Fragment>
             )}
           </main>
