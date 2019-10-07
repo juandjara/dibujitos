@@ -192,6 +192,9 @@ const List = styled.ul`
         display: inline-block;
       }
     }
+    &.selected {
+      outline: 1px solid #ccc;
+    }
   }
 `;
 
