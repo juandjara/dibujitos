@@ -75,13 +75,6 @@ const List = styled.ul`
     flex-wrap: wrap;
     justify-content: space-evenly;
   `}
-  @media (max-width: 420px) {
-    display: block;
-    li {
-      margin: 12px auto;
-      max-width: 242px;
-    }
-  }
 `;
 
 const EpisodeCard = styled.li`

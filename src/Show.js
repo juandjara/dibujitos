@@ -44,13 +44,11 @@ const ShowStyles = styled.main`
     }
   }
   .back-btn {
+    margin-left: 0;
+    margin-bottom: 8px;
     .material-icons {
       font-size: 16px;
       margin-right: 4px;
-    }
-    @media (max-width: 420px) {
-      margin-left: 0;
-      margin-bottom: 8px;
     }
   }
   aside {
@@ -152,10 +150,16 @@ const ShowStyles = styled.main`
         border-color: ${theme.colors.secondaryDark};
       }
     }
-    @media (max-width: 420px) {
+    > a {
+      button {
+        width: 100%;
+      }
+    }
+    @media (max-width: 460px) {
       flex-wrap: wrap;
       > a {
         margin-top: .5rem;
+        flex-basis: calc(100% - 8px);
       }
     }
   }

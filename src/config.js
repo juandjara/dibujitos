@@ -3,8 +3,7 @@ export const sourceOptions = [
   {label: 'PuyaSubs - Español', value: 'py'}
 ]
 export const mediaQueries = {
-  more920: '(min-width: 920px)',
-  less420: '(max-width: 420px)'
+  more920: '(min-width: 920px)'
 }
 export const endpoint = "https://nyapi.fuken.xyz";
 export const downloaderApi = 'https://palomitas-dl.fuken.xyz'
