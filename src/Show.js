@@ -12,8 +12,6 @@ import Spinner from './Spinner';
 import { updateWatchedEpisodes } from './lastWatchedService';
 
 const ShowStyles = styled.main`
-  overflow-y: auto;
-  max-height: calc(100vh - 60px);
   .wrapper-top {
     max-width: 1024px;
     margin: 0 auto;
@@ -115,7 +113,7 @@ const ShowStyles = styled.main`
       outline: none;
       border: 2px solid transparent;
       background: transparent;
-      min-width: 200px;
+      min-width: 180px;
     }
     .material-icons {
       opacity: 0.5;
@@ -156,9 +154,8 @@ const ShowStyles = styled.main`
     }
     @media (max-width: 420px) {
       flex-wrap: wrap;
-      .qualities {
-        margin-bottom: .5rem;
-        flex-basis: 100%;
+      > a {
+        margin-top: .5rem;
       }
     }
   }
