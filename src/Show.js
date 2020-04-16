@@ -163,6 +163,9 @@ const ShowStyles = styled.main`
       }
     }
   }
+  .no-torrents {
+    margin-bottom: 24px;
+  }
 `;
 
 const List = styled.ul`
@@ -383,6 +386,22 @@ class Show extends Component {
     updateWatchedEpisodes(data);
   }
 
+  handleSourceChange = (source) => {
+    this.setState(state => ({
+      ...state,
+      source,
+      page: 0,
+      show: {
+        ...state.show,
+        episodes: []
+      }
+    }), async () => {
+      await this.fetchShow()
+      const epNumber = this.getEpisodeFromProps(this.props)
+      this.findEpisode(epNumber)
+    })
+  }
+
   render() {
     const {
       loadingShow, loadingEpisodes,
@@ -456,26 +475,32 @@ class Show extends Component {
             </section>
             {selectedEpisode && (
               <Fragment>
-                <MagnetPlayer
-                  magnet={selectedTorrent.magnet}
-                  onLoaded={() => this.updateLastWatched()} />
-                <section className="video-toolbar">
-                  <div className="qualities">
-                    {selectedEpisode.qualitiesFlat.map(torrent => (
-                      <Button key={torrent.key} 
-                        main={torrent.key === selectedTorrent.key}
-                        onClick={() => this.setState({selectedTorrent: selectedEpisode.qualitiesMap[torrent.key]})}>
-                        {torrent.key}
-                      </Button>
-                    ))}
-                  </div>
-                  <p>Ep. {selectedEpisode.episodeNumber}</p>
-                  {nextEpisode && (
-                    <Link to={`${url}?ep=${nextEpisode.episodeNumber}`}>
-                      <Button main>Siguiente episodio</Button>
-                    </Link>
-                  )}
-                </section>
+                {selectedTorrent ? (
+                  <Fragment>
+                    <MagnetPlayer
+                      magnet={selectedTorrent.magnet}
+                      onLoaded={() => this.updateLastWatched()} />
+                    <section className="video-toolbar">
+                      <div className="qualities">
+                        {selectedEpisode.qualitiesFlat.map(torrent => (
+                          <Button key={torrent.key} 
+                            main={torrent.key === selectedTorrent.key}
+                            onClick={() => this.setState({selectedTorrent: selectedEpisode.qualitiesMap[torrent.key]})}>
+                            {torrent.key}
+                          </Button>
+                        ))}
+                      </div>
+                      <p>Ep. {selectedEpisode.episodeNumber}</p>
+                      {nextEpisode && (
+                        <Link to={`${url}?ep=${nextEpisode.episodeNumber}`}>
+                          <Button main>Siguiente episodio</Button>
+                        </Link>
+                      )}
+                    </section>
+                  </Fragment>
+                ) : (
+                  <p className="no-torrents">No se han encontrado torrents para este capitulo con esta fuente</p>
+                )}
                 <div className="select-box">
                   <label htmlFor="sort">Fuente</label>
                   <Select
