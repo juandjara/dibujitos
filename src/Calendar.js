@@ -81,17 +81,6 @@ const CalendarStyles = styled.div`
   }
 `;
 
-const dayMap = {
-  'Monday': 'Lunes',
-  'Tuesday': 'Martes',
-  'Wednesday': 'Miércoles',
-  'Thursday': 'Jueves',
-  'Friday': 'Viernes',
-  'Saturday': 'Sábado',
-  'Sunday': 'Domingo',
-  'Today': 'Hoy'
-}
-
 function formatTime(timeStr) { 
   const date = new Date(timeStr);
   if (isNaN(date.getTime())) {
@@ -101,7 +90,6 @@ function formatTime(timeStr) {
 }
 
 function CalendarDay ({group}) {
-  console.log('rendering CalendarDay with ', group)
   return (
     <List>
       <p className="nodata">{group.animes.length ? '' : 'Sin capítulos este día'}</p>
@@ -115,6 +103,17 @@ function CalendarDay ({group}) {
   )
 }
 
+const dayMap = {
+  'Monday': 'Lunes',
+  'Tuesday': 'Martes',
+  'Wednesday': 'Miércoles',
+  'Thursday': 'Jueves',
+  'Friday': 'Viernes',
+  'Saturday': 'Sábado',
+  'Sunday': 'Domingo',
+  'Today': 'Hoy'
+}
+
 const endpoint = "https://nyapi.fuken.xyz";
 function Calendar() {
   const [day, setDay] = useState(0);
@@ -122,14 +121,29 @@ function Calendar() {
   useEffect(() => {
     async function innerFetch () {
       const url = `${endpoint}/calendar`;
-      const data = await window.fetch(url);
-      const json = await data.json();
-      setCalendar(json);
+      const res = await window.fetch(url);
+      const json = await res.json();
+      const calendar = json
+        .map(g => {
+          g.day_extra = g.day.split(' ')[1]
+          g.day = g.day.split(' ')[0]
+          if (g.day === 'Current')        g.day = 'Monday'
+          else if (g.day === 'Monday')    g.day = 'Tuesday'
+          else if (g.day === 'Tuesday')   g.day = 'Wednesday'
+          else if (g.day === 'Wednesday') g.day = 'Thursday'
+          else if (g.day === 'Thursday')  g.day = 'Friday'
+          else if (g.day === 'Friday')    g.day = 'Saturday'
+          else if (g.day === 'Saturday')  g.day = 'Sunday'
+          return g
+        })
+      setCalendar(calendar);
+      setDay(calendar.findIndex(g => g.day_extra === '(Today)') || 0)
     }
     innerFetch()
   }, [])
 
-  const titles = calendar.map(group => (dayMap[group.day] || group.day || '').slice(0, 3))
+  const titles = calendar
+    .map(group => (dayMap[group.day] || group.day || '').slice(0, 3))
 
   return ( 
     <CalendarStyles className="column calendar">
