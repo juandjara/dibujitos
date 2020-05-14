@@ -28,7 +28,7 @@ function Home({location}) {
         <Route path="/home/rawsearch" 
           render={() => (<RawSearch search={search} />)} />
       </Switch>
-      <Calendar />
+      {/* <Calendar /> */}
     </HomeStyles>
   );
 }

@@ -1,25 +1,41 @@
-import React, { Component } from 'react';
-import Select from 'react-select';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import format from 'date-fns/format';
-import theme from './theme';
-import Waypoint from 'react-waypoint';
-import { sourceOptions, endpoint } from './config';
-import Spinner from './Spinner';
-import { getWatchedEpisodes, removeWatchedEpisode } from './lastWatchedService';
-import Icon from './Icon';
+import React, { Component } from 'react'
+import Select from 'react-select'
+import styled from 'styled-components'
+import Waypoint from 'react-waypoint'
+import { sourceOptions, endpoint } from './config'
+import Spinner from './Spinner'
+import { getWatchedEpisodes, removeWatchedEpisode } from './lastWatchedService'
+import EpisodeCard from './EpisodeCard'
+import Calendar from './Calendar'
 
 const LatestStyles = styled.div`
   flex-grow: 1;
   .column-inner {
-    max-width: 768px;
+    max-width: 1168px;
+    min-width: 70vw;
     margin: 0 auto;
+    padding: 0 16px;
   }
+
+  .top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    .last-watched {
+      flex-grow: 1;
+      margin-right: 12px;
+    }
+
+    @media (max-width: 920px) {
+      display: block;
+    }
+  }
+  
   .last-watched {
-    > h2 {
-      font-weight: lighter;
-      font-size: 20px;
+    > h3 {
+      font-weight: normal;
+      font-size: 24px;
       margin-top: 2rem;
       margin-left: 6px;
       margin-bottom: .5rem;
@@ -32,27 +48,22 @@ const Header = styled.header`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
-  margin: 16px 8px;
-
-  & + p {
-    margin: .5rem;
-    margin-top: 2rem;
-  }
+  margin: 12px 8px;
+  margin-top: 42px;
 
   .title {
     margin-right: 2rem;
     > h2 {
       font-weight: lighter;
       font-size: 2rem;
-      margin-top: 24px;
-      margin-bottom: 4px;
+      margin: 4px 0;
     }
     p {
       color: #999;
     }
   }
+
   .select-box {
-    margin-top: 1rem;
     min-width: 210px;
     label {
       display: block;
@@ -65,85 +76,23 @@ const List = styled.ul`
   padding: 0;
   margin: 0;
   list-style: none;
-  display: flex;
-  align-items: center;
-  ${props => props.horizontal ? `
-    flex-wrap: nowrap;
-    overflow-x: scroll;
-    justify-content: flex-start;
-  `:`
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-  `}
-`;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-gap: 24px 16px;
 
-const EpisodeCard = styled.li`
-  position: relative;
-  margin: 3px 5px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-  &:hover {
-    border: 2px solid ${theme.colors.secondary};
-  }
-  > a {
-    display: block;
-    color: inherit;
-    height: 340px;
-    > div {
-      padding: 8px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      background: rgba(255,255,255, 0.9);
-      width: 100%;
-    }
-  }
-  img {
-    width: 240px;
-    height: 340px;
-  }
-  p {
-    margin: 5px 0;
-  }
-  .title {
+  ${props => props.horizontalScroll ? `
+    padding: 4px 8px;
+    overflow-x: auto;
     display: flex;
-    span:first-child {
-      color: ${theme.colors.primary};
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      flex: 1;
-    }
-  }
-  .date {
-    .material-icons {
-      margin-right: 6px;
-    }
-  }
-  .close-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 2px;
-    background: rgba(255,255,255, 0.75);
-    opacity: 0.5;
-    border: none;
-    cursor: pointer;
-    border-bottom-left-radius: 4px;
-    .material-icons {
-      font-size: 14px;
-    }
-    &:hover {
-      opacity: 1;
-    }
-  }
-`;
+    justify-content: flex-start;
+    align-items: center;
 
-function formatDate(ms) {
-  const date = new Date(ms);
-  return format(date, 'DD/MM - HH:mm');
-}
+    .episode-card {
+      overflow: hidden;
+      flex: 0 0 240px;
+    }
+  ` : ''}
+`;
 
 class Latest extends Component {
   containerRef = null
@@ -215,28 +164,25 @@ class Latest extends Component {
       <LatestStyles className="column"
         containerRef={ref => this.containerRef = ref}>
         <div className="column-inner">
-          <div className="last-watched">
+          <div className="top-row">
             {lastwatched.length > 0 && (
-              <h2>Ultimamente has visto</h2>
+              <div className="last-watched">
+                <h3>Ultimamente has visto</h3>
+                <List horizontalScroll>
+                  {lastwatched.map(ep => (
+                    <EpisodeCard
+                      key={`${ep.id}-${ep.epNumber}`}
+                      image={ep.img}
+                      link={`/show/${ep.id}?ep=${ep.epNumber}`}
+                      title={ep.title}
+                      number={ep.epNumber}
+                      onClose={ev => this.removeWatchedEpisode(ev, ep)}
+                    />
+                  ))}
+                </List>
+              </div>
             )}
-            <List horizontal>
-              {lastwatched.map(ep => (
-                <EpisodeCard key={`${ep.id}-${ep.epNumber}`}>
-                  <Link to={`/show/${ep.id}?ep=${ep.epNumber}`}>
-                    <img src={ep.img} alt="portada del show" />
-                    <div>
-                      <p className="title">
-                        <span>{ep.title}</span>
-                        <span>Ep. {ep.epNumber}</span>
-                      </p>
-                    </div>
-                    <button onClick={ev => this.removeWatchedEpisode(ev, ep)} className="close-btn">
-                      <Icon icon="close" />
-                    </button>
-                  </Link>
-                </EpisodeCard>
-              ))}
-            </List>
+            <Calendar />
           </div>
           <Header>
             <div className="title">
@@ -253,24 +199,16 @@ class Latest extends Component {
               />
             </div>
           </Header>
-          <p>Capitulos de anime en streaming desde torrents de HorribleSubs</p>
           <List>
             {episodes.map((ep, i) => (
-              <EpisodeCard key={`${ep.slug}-${ep.episodeNumber}`}>
-                <Link to={`/show/${ep.slug}`}>
-                  <img src={ep.posterImage && ep.posterImage.small} alt="portada del show" />
-                  <div>
-                    <p className="title">
-                      <span>{ep.showTitle}</span>
-                      <span>Ep. {ep.episodeNumber}</span>
-                    </p>
-                    <p className="date">
-                      <i className="material-icons">event</i>
-                      <span>{formatDate(ep.episodeDate)}</span>
-                    </p>
-                  </div>
-                </Link>
-              </EpisodeCard>
+              <EpisodeCard
+                key={`${ep.slug}-${ep.episodeNumber}`}
+                image={ep.posterImage && ep.posterImage.small}
+                link={`/show/${ep.slug}`}
+                title={ep.showTitle}
+                number={ep.episodeNumber}
+                date={ep.episodeDate}
+              />
             ))}
           </List>
           {loading && <Spinner />}

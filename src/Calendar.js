@@ -119,28 +119,20 @@ const endpoint = "https://nyapi.fuken.xyz";
 function Calendar() {
   const [day, setDay] = useState(0);
   const [calendar, setCalendar] = useState([]);
-  useEffect(async () => {
-    const url = `${endpoint}/calendar`;
-    const data = await window.fetch(url);
-    const json = await data.json();
-    // TODO: fix this in backend when 
-    // this https://github.com/tanukiapp/hs-calendar/pull/5 is merged
-    const cal = json.map((elem, index) => {
-      const prev = json[index - 1];
-      if (!prev) {
-        return elem;
-      }
-      elem.day = elem.day.split(' ')[0];
-      elem.animes = prev.animes;
-      return elem;
-    }).slice(1);
-    setCalendar(cal);
+  useEffect(() => {
+    async function innerFetch () {
+      const url = `${endpoint}/calendar`;
+      const data = await window.fetch(url);
+      const json = await data.json();
+      setCalendar(json);
+    }
+    innerFetch()
   }, [])
 
   const titles = calendar.map(group => (dayMap[group.day] || group.day || '').slice(0, 3))
 
   return ( 
-    <CalendarStyles className="column">
+    <CalendarStyles className="column calendar">
       <header>
         <h2>Calendario</h2>
         <p>Horario de emision de capitulos de HorribleSubs</p>
