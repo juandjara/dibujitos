@@ -173,7 +173,7 @@ class Latest extends Component {
                     <EpisodeCard
                       key={`${ep.id}-${ep.epNumber}`}
                       image={ep.img}
-                      link={`/show/${ep.id}?ep=${ep.epNumber}`}
+                      link={`/show/${ep.id}?ep=${ep.epNumber}&source=${source.value}`}
                       title={ep.title}
                       number={ep.epNumber}
                       onClose={ev => this.removeWatchedEpisode(ev, ep)}
@@ -204,7 +204,7 @@ class Latest extends Component {
               <EpisodeCard
                 key={`${ep.slug}-${ep.episodeNumber}`}
                 image={ep.posterImage && ep.posterImage.small}
-                link={`/show/${ep.slug}`}
+                link={`/show/${ep.slug}?source=${source.value}`}
                 title={ep.showTitle}
                 number={ep.episodeNumber}
                 date={ep.episodeDate}

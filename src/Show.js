@@ -221,14 +221,17 @@ class Show extends Component {
     return new Promise(resolve => this.setState(modifier, resolve));
   }
 
-  componentDidMount() {
-    this.fetchShow().then(() => {
-      const eps = this.state.show.episodes;
-      if (!this.state.selectedEpisode && eps.length > 0) {
-        const epNumber = this.getEpisodeFromProps(this.props) || eps[0].episodeNumber;
-        this.findEpisode(epNumber);
-      }
-    });
+  async componentDidMount() {
+    const source = this.getSourceFromProps(this.props)
+    if (source) {
+      await this.awaitState({ source })
+    }
+    await this.fetchShow()
+    const eps = this.state.show.episodes;
+    if (!this.state.selectedEpisode && eps.length > 0) {
+      const epNumber = this.getEpisodeFromProps(this.props) || eps[0].episodeNumber;
+      this.findEpisode(epNumber);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -244,6 +247,13 @@ class Show extends Component {
     const qs = location.search.replace('?', '');
     const urlParams = new URLSearchParams(qs);
     return Number(urlParams.get('ep'));
+  }
+
+  getSourceFromProps ({ location }) {
+    const qs = location.search.replace('?', '');
+    const urlParams = new URLSearchParams(qs);
+    const value = urlParams.get('source');
+    return sourceOptions.find(s => s.value === value)
   }
 
   handleSearch = (ev) => {
@@ -351,7 +361,8 @@ class Show extends Component {
 
   goToEpisode(ep) {
     const url = this.props.location.pathname;
-    this.props.history.push(`${url}?ep=${ep.episodeNumber}`);
+    const source = this.state.source.value
+    this.props.history.push(`${url}?ep=${ep.episodeNumber}&source=${source}`);
   }
 
   getNextEpisode() {
