@@ -182,7 +182,7 @@ class Latest extends Component {
                 </List>
               </div>
             )}
-            <Calendar />
+            {/* <Calendar /> */}
           </div>
           <Header>
             <div className="title">

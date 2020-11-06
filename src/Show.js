@@ -256,8 +256,8 @@ class Show extends Component {
     }
   }
 
-  doSearch(search) {
-    this.awaitState(state => ({
+  async doSearch(search) {
+    await this.awaitState(state => ({
       ...state,
       page: 0,
       search: search || state.search,
@@ -267,12 +267,10 @@ class Show extends Component {
         episodes: []
       }
     }))
-    .then(() => this.fetchShow())
-    .then(() => {
-      const epList = this.state.show.episodes; 
-      const ep = epList.find(ep => ep.episodeNumber === Number(this.state.search)) || epList[0];
-      this.selectEpisode(ep);
-    });
+    await this.fetchShow()
+    const epList = this.state.show.episodes; 
+    const ep = epList.find(ep => ep.episodeNumber === Number(this.state.search)) || epList[0];
+    this.selectEpisode(ep);
   }
 
   handleNextPage = () => {
@@ -398,7 +396,11 @@ class Show extends Component {
     }), async () => {
       await this.fetchShow()
       const epNumber = this.getEpisodeFromProps(this.props)
-      this.findEpisode(epNumber)
+      if (epNumber) {
+        this.findEpisode(epNumber)
+      } else {
+        this.selectEpisode(this.state.show.episodes[0])
+      }
     })
   }
 
