@@ -1,6 +1,6 @@
 export const sourceOptions = [
-  {label: 'HorribleSubs - Inglés', value: 'hs'},
-  {label: 'PuyaSubs - Español', value: 'py'}
+  {label: 'PuyaSubs - Español', value: 'py'},
+  {label: 'HorribleSubs - Inglés', value: 'hs'}
 ]
 export const mediaQueries = {
   more920: '(min-width: 920px)'
