@@ -7,7 +7,7 @@ export function getWatchedEpisodes() {
 
 export function updateWatchedEpisodes(episode) {
   const data = getWatchedEpisodes().filter(s => s.id !== episode.id);
-  data.push(episode);
+  data.unshift(episode);
   localStorage.setItem(KEY, JSON.stringify(data));
   return data;
 }
