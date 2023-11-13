@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Archive note
+This project is no longer being supported or worked on. The sources used for fetching data for the project are no longer available so this project is being archived.
+
 ## Available Scripts
 
 In the project directory, you can run:
